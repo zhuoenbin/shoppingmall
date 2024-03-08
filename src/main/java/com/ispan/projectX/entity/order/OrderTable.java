@@ -4,7 +4,11 @@ import com.ispan.projectX.entity.Seller;
 import com.ispan.projectX.entity.Users;
 import jakarta.persistence.*;
 
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "order_table")
@@ -13,14 +17,17 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Long orderId;
+    private Integer orderId;
 
-    @ManyToOne
-    @JoinColumn(name = "buyer_id", referencedColumnName = "user_id")
-    private Users buyer;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "buyer_id")
+    private Users user;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "seller_id")
     private Seller seller;
 
     @Column(name = "order_date")
@@ -54,25 +61,25 @@ public class OrderTable {
     private Integer paymentStatus;
 
     @Column(name = "seller_confirm_date")
-    private LocalDateTime sellerConfirmDate;
+    private Date sellerConfirmDate;
 
     @Column(name = "seller_ship_date")
-    private LocalDateTime sellerShipDate;
+    private Date sellerShipDate;
 
     @Column(name = "logistics_ship_date")
-    private LocalDateTime logisticsShipDate;
+    private Date logisticsShipDate;
 
     @Column(name = "logistics_arrival_date")
-    private LocalDateTime logisticsArrivalDate;
+    private Date logisticsArrivalDate;
 
     @Column(name = "buyer_receive_date")
-    private LocalDateTime buyerReceiveDate;
+    private Date buyerReceiveDate;
 
     @Column(name = "buyer_confirm_date")
-    private LocalDateTime buyerConfirmDate;
+    private Date buyerConfirmDate;
 
     @Column(name = "order_cancel_date")
-    private LocalDateTime orderCancelDate;
+    private Date orderCancelDate;
 
     @Column(name = "shipping_company_name")
     private String shippingCompanyName;
@@ -89,12 +96,15 @@ public class OrderTable {
     @Column(name = "freight")
     private Integer freight;
 
+    @OneToMany(mappedBy = "order",
+                fetch = FetchType.LAZY)//, cascade = CascadeType.ALL)
+    private List<OrderDetail> orderDetails;
+
     public OrderTable() {
     }
 
-    public OrderTable(Long orderId, Users buyer, Seller seller, LocalDateTime orderDate, Integer totalPrice, Integer sellerDiscountPrice, Integer sellerCouponPrice, Integer officialDiscountPrice, Integer officialCouponPrice, String discountDescription, String couponDescription, Integer paymentMethod, Integer paymentStatus, LocalDateTime sellerConfirmDate, LocalDateTime sellerShipDate, LocalDateTime logisticsShipDate, LocalDateTime logisticsArrivalDate, LocalDateTime buyerReceiveDate, LocalDateTime buyerConfirmDate, LocalDateTime orderCancelDate, String shippingCompanyName, String city, String district, String address, Integer freight) {
-        this.orderId = orderId;
-        this.buyer = buyer;
+    public OrderTable(Users user, Seller seller, LocalDateTime orderDate, Integer totalPrice, Integer sellerDiscountPrice, Integer sellerCouponPrice, Integer officialDiscountPrice, Integer officialCouponPrice, String discountDescription, String couponDescription, Integer paymentMethod, Integer paymentStatus, Date sellerConfirmDate, Date sellerShipDate, Date logisticsShipDate, Date logisticsArrivalDate, Date buyerReceiveDate, Date buyerConfirmDate, Date orderCancelDate, String shippingCompanyName, String city, String district, String address, Integer freight) {
+        this.user = user;
         this.seller = seller;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
@@ -120,20 +130,37 @@ public class OrderTable {
         this.freight = freight;
     }
 
-    public Long getOrderId() {
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public void addOrderDetail(OrderDetail orderDetail) {
+        if(orderDetails == null) {
+            orderDetails = new ArrayList<>();
+        }
+        orderDetails.add(orderDetail);
+        orderDetail.setOrder(this);
+    }
+
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    public Users getBuyer() {
-        return buyer;
+    public Users getUser() {
+        return user;
     }
 
-    public void setBuyer(Users buyer) {
-        this.buyer = buyer;
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     public Seller getSeller() {
@@ -224,59 +251,59 @@ public class OrderTable {
         this.paymentStatus = paymentStatus;
     }
 
-    public LocalDateTime getSellerConfirmDate() {
+    public Date getSellerConfirmDate() {
         return sellerConfirmDate;
     }
 
-    public void setSellerConfirmDate(LocalDateTime sellerConfirmDate) {
+    public void setSellerConfirmDate(Date sellerConfirmDate) {
         this.sellerConfirmDate = sellerConfirmDate;
     }
 
-    public LocalDateTime getSellerShipDate() {
+    public Date getSellerShipDate() {
         return sellerShipDate;
     }
 
-    public void setSellerShipDate(LocalDateTime sellerShipDate) {
+    public void setSellerShipDate(Date sellerShipDate) {
         this.sellerShipDate = sellerShipDate;
     }
 
-    public LocalDateTime getLogisticsShipDate() {
+    public Date getLogisticsShipDate() {
         return logisticsShipDate;
     }
 
-    public void setLogisticsShipDate(LocalDateTime logisticsShipDate) {
+    public void setLogisticsShipDate(Date logisticsShipDate) {
         this.logisticsShipDate = logisticsShipDate;
     }
 
-    public LocalDateTime getLogisticsArrivalDate() {
+    public Date getLogisticsArrivalDate() {
         return logisticsArrivalDate;
     }
 
-    public void setLogisticsArrivalDate(LocalDateTime logisticsArrivalDate) {
+    public void setLogisticsArrivalDate(Date logisticsArrivalDate) {
         this.logisticsArrivalDate = logisticsArrivalDate;
     }
 
-    public LocalDateTime getBuyerReceiveDate() {
+    public Date getBuyerReceiveDate() {
         return buyerReceiveDate;
     }
 
-    public void setBuyerReceiveDate(LocalDateTime buyerReceiveDate) {
+    public void setBuyerReceiveDate(Date buyerReceiveDate) {
         this.buyerReceiveDate = buyerReceiveDate;
     }
 
-    public LocalDateTime getBuyerConfirmDate() {
+    public Date getBuyerConfirmDate() {
         return buyerConfirmDate;
     }
 
-    public void setBuyerConfirmDate(LocalDateTime buyerConfirmDate) {
+    public void setBuyerConfirmDate(Date buyerConfirmDate) {
         this.buyerConfirmDate = buyerConfirmDate;
     }
 
-    public LocalDateTime getOrderCancelDate() {
+    public Date getOrderCancelDate() {
         return orderCancelDate;
     }
 
-    public void setOrderCancelDate(LocalDateTime orderCancelDate) {
+    public void setOrderCancelDate(Date orderCancelDate) {
         this.orderCancelDate = orderCancelDate;
     }
 
@@ -324,7 +351,7 @@ public class OrderTable {
     public String toString() {
         final StringBuffer sb = new StringBuffer("OrderTable{");
         sb.append("orderId=").append(orderId);
-        sb.append(", buyer=").append(buyer);
+        sb.append(", user=").append(user);
         sb.append(", seller=").append(seller);
         sb.append(", orderDate=").append(orderDate);
         sb.append(", totalPrice=").append(totalPrice);

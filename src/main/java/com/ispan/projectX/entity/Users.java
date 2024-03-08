@@ -1,11 +1,13 @@
 package com.ispan.projectX.entity;
 
-import com.ispan.projectX.entity.pushmsg.UserPushMessage;
+
+import com.ispan.projectX.entity.order.OrderTable;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
+
 
 @Entity
 @Table(name = "user")
@@ -53,9 +55,28 @@ public class Users {
     private String bankAccount1;
 
     @OneToMany(mappedBy = "user",
-            fetch = FetchType.LAZY ,
-            cascade = {CascadeType.ALL})
-    private List<UserPushMessage> userPushMessages;
+            fetch = FetchType.LAZY )
+            //cascade = {CascadeType.ALL})
+    private List<OrderTable> orderTables;
+
+
+
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
+
+    public void setOrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
+    public void add(OrderTable orderTable){
+        if(orderTables == null){
+            orderTables = new ArrayList<>();
+        }
+        orderTables.add(orderTable);
+        orderTable.setUser(this);
+    }
 
     public Users() {
     }
@@ -179,21 +200,6 @@ public class Users {
         this.bankAccount1 = bankAccount1;
     }
 
-    public List<UserPushMessage> getUserPushMessages() {
-        return userPushMessages;
-    }
-
-    public void setUserPushMessages(List<UserPushMessage> userPushMessages) {
-        this.userPushMessages = userPushMessages;
-    }
-
-    public void add(UserPushMessage userPushMessage) {
-        if (userPushMessages == null) {
-            userPushMessages = new ArrayList<>();
-        }
-        userPushMessages.add(userPushMessage);
-        userPushMessage.setUser(this);
-    }
 
 
     @Override

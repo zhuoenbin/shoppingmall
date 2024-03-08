@@ -1,6 +1,7 @@
 package com.ispan.projectX.entity.order;
 
-import com.ispan.projectX.entity.Product;
+
+import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,14 +11,14 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
-    private Long orderDetailId;
+    private Integer orderDetailId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    @JoinColumn(name = "order_id")
     private OrderTable order;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @OneToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(name = "quantity")
@@ -32,8 +33,7 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Long orderDetailId, OrderTable order, Product product, Integer quantity, Integer price, Integer discount) {
-        this.orderDetailId = orderDetailId;
+    public OrderDetail(OrderTable order, Product product, Integer quantity, Integer price, Integer discount) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
@@ -41,11 +41,11 @@ public class OrderDetail {
         this.discount = discount;
     }
 
-    public Long getOrderDetailId() {
+    public Integer getOrderDetailId() {
         return orderDetailId;
     }
 
-    public void setOrderDetailId(Long orderDetailId) {
+    public void setOrderDetailId(Integer orderDetailId) {
         this.orderDetailId = orderDetailId;
     }
 
@@ -89,6 +89,7 @@ public class OrderDetail {
         this.discount = discount;
     }
 
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("OrderDetail{");
@@ -101,5 +102,4 @@ public class OrderDetail {
         sb.append('}');
         return sb.toString();
     }
-
 }

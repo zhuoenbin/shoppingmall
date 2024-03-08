@@ -1,38 +1,36 @@
-package com.ispan.projectX.entity;
-
+package com.ispan.projectX.entity.product;
 
 import jakarta.persistence.*;
-import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "product_category")
 public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Long categoryId;
+    private Integer categoryId;
 
-    @Column(name = "category_name", nullable = false)
+    @Column(name = "category_name")
     private String categoryName;
 
     @Column(name = "category_description")
     private String categoryDescription;
 
+
     public ProductCategory() {
     }
 
-    public ProductCategory(Long categoryId, String categoryName, String categoryDescription) {
-        this.categoryId = categoryId;
+    public ProductCategory(String categoryName, String categoryDescription) {
+
         this.categoryName = categoryName;
         this.categoryDescription = categoryDescription;
     }
 
-    public Long getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) {
+    public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -61,5 +59,4 @@ public class ProductCategory {
         sb.append('}');
         return sb.toString();
     }
-
 }

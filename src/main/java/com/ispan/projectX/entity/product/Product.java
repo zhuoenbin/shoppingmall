@@ -1,97 +1,65 @@
-package com.ispan.projectX.entity;
+package com.ispan.projectX.entity.product;
 
 import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @Entity
-@Table(name="product")
+@Table(name = "product")
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="product_id")
+    @Column(name = "product_id")
     private Integer productId;
 
-    @Column(name="product_name", nullable = false)
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name="seller_id")
+    @Column(name = "seller_id")
     private Integer sellerId;
 
-    @Column(name="employee_id")
+    @Column(name = "employee_id")
     private Integer employeeId;
 
-    @Column(name="unit_price")
+    @Column(name = "unit_price")
     private Integer unitPrice;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Integer categoryId;
 
-    @Column(name="stock")
+    @Column(name = "stock")
     private Integer stock;
 
-    @Column(name="reserved_quantity")
+    @Column(name = "reserved_quantity")
     private Integer reservedQuantity;
 
+    @Column(name = "listing_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-    @Column(name="listing_date")
     private Date listingDate;
 
+    @Column(name = "modified_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-    @Column(name="modified_date")
     private Date modifiedDate;
 
-    @Column(name="description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name="product_status", length = 20)
+    @Column(name = "product_status", length = 20)
     private String productStatus;
 
-    @Column(name="promotion_id")
+    @Column(name = "product_status_des", length = 200)
+    private String productStatusDes;
+
+    @Column(name = "promotion_id")
     private Integer promotionId;
 
-    @Column(name="official_discount_id")
+    @Column(name = "official_discount_id")
     private Integer officialDiscountId;
 
-    @Column(name="seller_discount_id")
+    @Column(name = "seller_discount_id")
     private Integer sellerDiscountId;
 
-    @Column(name="official_discount_id")
-    private Integer officialActivityDiscount;
-
-    @Column(name="seller_discount_id")
-    private Integer sellerActivityDiscount;
-
-    @ManyToOne
-    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id", insertable = false, updatable = false)
-    private Seller seller;
-
     public Product() {
-    }
-
-    public Product(Integer productId, String productName, Integer sellerId, Integer employeeId, Integer unitPrice, Integer categoryId, Integer stock, Integer reservedQuantity, Date listingDate, Date modifiedDate, String description, String productStatus, Integer promotionId, Integer officialDiscountId, Integer sellerDiscountId, Integer officialActivityDiscount, Integer sellerActivityDiscount, Seller seller) {
-        this.productId = productId;
-        this.productName = productName;
-        this.sellerId = sellerId;
-        this.employeeId = employeeId;
-        this.unitPrice = unitPrice;
-        this.categoryId = categoryId;
-        this.stock = stock;
-        this.reservedQuantity = reservedQuantity;
-        this.listingDate = listingDate;
-        this.modifiedDate = modifiedDate;
-        this.description = description;
-        this.productStatus = productStatus;
-        this.promotionId = promotionId;
-        this.officialDiscountId = officialDiscountId;
-        this.sellerDiscountId = sellerDiscountId;
-        this.officialActivityDiscount = officialActivityDiscount;
-        this.sellerActivityDiscount = sellerActivityDiscount;
-        this.seller = seller;
     }
 
     public Integer getProductId() {
@@ -190,6 +158,14 @@ public class Product {
         this.productStatus = productStatus;
     }
 
+    public String getProductStatusDes() {
+        return productStatusDes;
+    }
+
+    public void setProductStatusDes(String productStatusDes) {
+        this.productStatusDes = productStatusDes;
+    }
+
     public Integer getPromotionId() {
         return promotionId;
     }
@@ -214,30 +190,6 @@ public class Product {
         this.sellerDiscountId = sellerDiscountId;
     }
 
-    public Integer getOfficialActivityDiscount() {
-        return officialActivityDiscount;
-    }
-
-    public void setOfficialActivityDiscount(Integer officialActivityDiscount) {
-        this.officialActivityDiscount = officialActivityDiscount;
-    }
-
-    public Integer getSellerActivityDiscount() {
-        return sellerActivityDiscount;
-    }
-
-    public void setSellerActivityDiscount(Integer sellerActivityDiscount) {
-        this.sellerActivityDiscount = sellerActivityDiscount;
-    }
-
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Product{");
@@ -253,11 +205,10 @@ public class Product {
         sb.append(", modifiedDate=").append(modifiedDate);
         sb.append(", description='").append(description).append('\'');
         sb.append(", productStatus='").append(productStatus).append('\'');
+        sb.append(", productStatusDes='").append(productStatusDes).append('\'');
         sb.append(", promotionId=").append(promotionId);
         sb.append(", officialDiscountId=").append(officialDiscountId);
         sb.append(", sellerDiscountId=").append(sellerDiscountId);
-        sb.append(", officialActivityDiscount=").append(officialActivityDiscount);
-
         sb.append('}');
         return sb.toString();
     }

@@ -1,11 +1,14 @@
 package com.ispan.projectX.entity;
 
-import com.ispan.projectX.entity.pushmsg.PushReceiverGroup;
+
+import com.ispan.projectX.entity.order.OrderTable;
 import jakarta.persistence.*;
+
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 @Entity
 @Table(name = "seller")
@@ -19,7 +22,7 @@ public class Seller {
     private Users user;
 
     @Column(name = "seller_name")
-    private Integer sellerName;
+    private String sellerName;
 
     @Column(name = "seller_image", length = 1000)
     private String sellerImage;
@@ -59,10 +62,30 @@ public class Seller {
 
     @OneToMany(mappedBy = "seller",
             fetch = FetchType.LAZY ,
-            cascade = {CascadeType.ALL})
-    private List<PushReceiverGroup> pushReceiverGroups;
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<OrderTable> orderTables;
+
+
 
     public Seller() {
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
+
+    public void setOrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
+    public void add(OrderTable orderTable){
+        if(orderTables == null){
+            orderTables = new ArrayList<>();
+        }
+        orderTables.add(orderTable);
+        orderTable.setSeller(this);
+
     }
 
     public Integer getSellerId() {
@@ -81,11 +104,11 @@ public class Seller {
         this.user = user;
     }
 
-    public Integer getSellerName() {
+    public String getSellerName() {
         return sellerName;
     }
 
-    public void setSellerName(Integer sellerName) {
+    public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
     }
 
@@ -185,21 +208,7 @@ public class Seller {
         this.bankAccount3 = bankAccount3;
     }
 
-    public List<PushReceiverGroup> getPushReceiverGroups() {
-        return pushReceiverGroups;
-    }
 
-    public void setPushReceiverGroups(List<PushReceiverGroup> pushReceiverGroups) {
-        this.pushReceiverGroups = pushReceiverGroups;
-    }
-
-    public void add(PushReceiverGroup tmpPushReceiverGroup) {
-        if(pushReceiverGroups==null){
-            pushReceiverGroups = new ArrayList<>();
-        }
-        pushReceiverGroups.add(tmpPushReceiverGroup);
-        tmpPushReceiverGroup.setSeller(this);
-    }
 
     @Override
     public String toString() {
