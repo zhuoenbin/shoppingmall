@@ -1,7 +1,10 @@
 package com.ispan.projectX.entity;
 
-import com.ispan.projectX.entity.pushmsg.PushReceiverGroup;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "seller")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "sellerId")
 public class Seller {
 
     @Id
@@ -19,7 +23,7 @@ public class Seller {
     private Users user;
 
     @Column(name = "seller_name")
-    private Integer sellerName;
+    private String sellerName;
 
     @Column(name = "seller_image", length = 1000)
     private String sellerImage;
@@ -30,9 +34,13 @@ public class Seller {
     @Column(name = "seller_introduce", length = 500)
     private String sellerIntroduce;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "join_time")
     private Date joinTime;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "last_login_time")
     private Date lastLoginTime;
 
@@ -59,11 +67,16 @@ public class Seller {
 
     @OneToMany(mappedBy = "seller",
             fetch = FetchType.LAZY ,
-            cascade = {CascadeType.ALL})
-    private List<PushReceiverGroup> pushReceiverGroups;
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    List<Product> products;
+
 
     public Seller() {
     }
+
+////////////////////////////////////////
+
 
     public Integer getSellerId() {
         return sellerId;
@@ -81,11 +94,11 @@ public class Seller {
         this.user = user;
     }
 
-    public Integer getSellerName() {
+    public String getSellerName() {
         return sellerName;
     }
 
-    public void setSellerName(Integer sellerName) {
+    public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
     }
 
@@ -185,22 +198,15 @@ public class Seller {
         this.bankAccount3 = bankAccount3;
     }
 
-    public List<PushReceiverGroup> getPushReceiverGroups() {
-        return pushReceiverGroups;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setPushReceiverGroups(List<PushReceiverGroup> pushReceiverGroups) {
-        this.pushReceiverGroups = pushReceiverGroups;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
-    public void add(PushReceiverGroup tmpPushReceiverGroup) {
-        if(pushReceiverGroups==null){
-            pushReceiverGroups = new ArrayList<>();
-        }
-        pushReceiverGroups.add(tmpPushReceiverGroup);
-        tmpPushReceiverGroup.setSeller(this);
-    }
-
+    //////////////////////////////////////////
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Seller{");

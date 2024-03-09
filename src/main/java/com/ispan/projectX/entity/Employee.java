@@ -1,6 +1,7 @@
 package com.ispan.projectX.entity;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -30,9 +31,13 @@ public class Employee {
     @Column(name = "phone")
     private String phone;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "hire_date")
     private Date hireDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "birth_date")
     private Date birthDate;
 
@@ -54,39 +59,12 @@ public class Employee {
     @Column(name = "db_authority", length = 10)
     private String dbAuthority;
 
-    @OneToMany(mappedBy = "employee",
-            fetch = FetchType.LAZY ,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Complaint> complaint;
+
 
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String email, String password, String phone, Date hireDate, Date birthDate, String city, String district, String address, String department, String title, String dbAuthority) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.hireDate = hireDate;
-        this.birthDate = birthDate;
-        this.city = city;
-        this.district = district;
-        this.address = address;
-        this.department = department;
-        this.title = title;
-        this.dbAuthority = dbAuthority;
-    }
-
-    public void add(Complaint tmpComplaint){
-        if(complaint==null){
-            complaint = new ArrayList<>();
-        }
-        complaint.add(tmpComplaint);
-
-        tmpComplaint.setEmployee(this);
-    }
+    /////////////////////////////////////
 
     public Integer getEmployeeId() {
         return employeeId;
@@ -200,13 +178,10 @@ public class Employee {
         this.dbAuthority = dbAuthority;
     }
 
-    public List<Complaint> getComplaint() {
-        return complaint;
-    }
 
-    public void setComplaint(List<Complaint> complaint) {
-        this.complaint = complaint;
-    }
+    ////////////////////////////////////
+
+
 
     @Override
     public String toString() {

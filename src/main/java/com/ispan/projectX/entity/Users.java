@@ -1,6 +1,5 @@
 package com.ispan.projectX.entity;
 
-import com.ispan.projectX.entity.pushmsg.UserPushMessage;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -52,10 +51,7 @@ public class Users {
     @Column(name = "bank_account1", length = 50)
     private String bankAccount1;
 
-    @OneToMany(mappedBy = "user",
-            fetch = FetchType.LAZY ,
-            cascade = {CascadeType.ALL})
-    private List<UserPushMessage> userPushMessages;
+
 
     public Users() {
     }
@@ -177,22 +173,6 @@ public class Users {
 
     public void setBankAccount1(String bankAccount1) {
         this.bankAccount1 = bankAccount1;
-    }
-
-    public List<UserPushMessage> getUserPushMessages() {
-        return userPushMessages;
-    }
-
-    public void setUserPushMessages(List<UserPushMessage> userPushMessages) {
-        this.userPushMessages = userPushMessages;
-    }
-
-    public void add(UserPushMessage userPushMessage) {
-        if (userPushMessages == null) {
-            userPushMessages = new ArrayList<>();
-        }
-        userPushMessages.add(userPushMessage);
-        userPushMessage.setUser(this);
     }
 
 

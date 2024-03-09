@@ -1,18 +1,23 @@
 package com.ispan.projectX.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "product_gallery")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "product")
 public class ProductGallery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "img_id")
-    private Long imgId;
+    private Integer imgId;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id", nullable = false)
     private Product product;
 
     @Column(name = "img_path", nullable = false)
@@ -23,19 +28,13 @@ public class ProductGallery {
 
     public ProductGallery() {
     }
+    ////////////////////////////////////
 
-    public ProductGallery(Long imgId, Product product, String imgPath, String imgDescription) {
-        this.imgId = imgId;
-        this.product = product;
-        this.imgPath = imgPath;
-        this.imgDescription = imgDescription;
-    }
-
-    public Long getImgId() {
+    public Integer getImgId() {
         return imgId;
     }
 
-    public void setImgId(Long imgId) {
+    public void setImgId(Integer imgId) {
         this.imgId = imgId;
     }
 
@@ -62,6 +61,10 @@ public class ProductGallery {
     public void setImgDescription(String imgDescription) {
         this.imgDescription = imgDescription;
     }
+
+
+    ////////////////////////////////////
+
 
     @Override
     public String toString() {
