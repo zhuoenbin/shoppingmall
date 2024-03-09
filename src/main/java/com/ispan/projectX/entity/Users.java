@@ -51,7 +51,11 @@ public class Users {
     @Column(name = "bank_account1", length = 50)
     private String bankAccount1;
 
-
+    @OneToMany(fetch = FetchType.LAZY , 
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH},
+            mappedBy = "user")
+    List<CreditCard> creditCards;
 
     public Users() {
     }
