@@ -12,6 +12,8 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
 
     Employee findByEmployeeId(Integer Id);
 
+    Employee findEmployeeByEmail(String username);
+
 //    @Query("from Complaint where employee = :employee")
 //    List<Complaint> findComplaintByEmployee(@Param("employee") Employee employee);
 

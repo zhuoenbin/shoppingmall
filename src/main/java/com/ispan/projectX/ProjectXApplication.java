@@ -36,11 +36,14 @@ public class ProjectXApplication {
 											   ProductRepository productRepository,
 											   OrderDetailRepository orderDetailRepository) {
 		return runner -> {
-			generateOrderDetailWithProduct(orderDetailRepository,
-					productRepository,
-					usersRepository,
-					sellerRepository,
-					orderTableRepository);
+
+
+			//訂單產生器
+//			generateOrderDetailWithProduct(orderDetailRepository,
+//					productRepository,
+//					usersRepository,
+//					sellerRepository,
+//					orderTableRepository);
 		};
 	}
 
@@ -98,13 +101,6 @@ public class ProjectXApplication {
 
 		orderDetailRepository.save(od1);
 		orderDetailRepository.save(od2);
-
-
-
-
-
-
-		
 
 	}
 

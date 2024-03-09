@@ -97,7 +97,7 @@ public class OrderTable {
     private Integer freight;
 
     @OneToMany(mappedBy = "order",
-                fetch = FetchType.LAZY)//, cascade = CascadeType.ALL)
+                fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
 
     public OrderTable() {

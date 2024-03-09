@@ -27,7 +27,7 @@ public class Users {
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
 
-    @Column(name = "user_password", nullable = false)
+    @Column(name = "user_password")
     private String userPassword;
 
     @Column(name = "user_gender", length = 10)
@@ -55,8 +55,8 @@ public class Users {
     private String bankAccount1;
 
     @OneToMany(mappedBy = "user",
-            fetch = FetchType.LAZY )
-            //cascade = {CascadeType.ALL})
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
     private List<OrderTable> orderTables;
 
 
