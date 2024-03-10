@@ -4,8 +4,11 @@ import com.ispan.projectX.dao.EmployeeRepository;
 import com.ispan.projectX.dao.UsersRepository;
 import com.ispan.projectX.dto.Passport;
 import com.ispan.projectX.entity.Users;
+import com.ispan.projectX.service.interfacefile.AccountService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,13 +17,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
 public class LogRestController {
+
+    @Autowired
+    private AccountService accountService;
 
     private EmployeeRepository employeeRepository;
 
@@ -35,136 +40,84 @@ public class LogRestController {
         this.usersRepository = usersRepository;
     }
 
+    @PostMapping("/register/formRegister")
+    public ResponseEntity<String> registerUser(@ModelAttribute Users user) {
+        System.out.println(user.toString());
+        try {
+            // 調用userService的註冊方法
+            accountService.register(user);
+            return ResponseEntity.ok("註冊成功");
+        } catch (Exception e) {
+            // 處理異常情況
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("註冊失敗：" + e.getMessage());
+        }
+    }
+
+    //給postman用，可直接JSON註冊
+    @PostMapping("/register/restRegister")
+    public ResponseEntity<String> restRegisterUser(@RequestBody Users user) {
+
+        // 檢查 email 是否已經存在
+        if (!accountService.registerEmailCheak(user.getUserEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("此 Email 已被註冊");
+        }
+        // 加密密碼並設置最後登入時間
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+        user.setLastLoginTime(new Date());
+        // 保存用戶
+        accountService.register(user);
+        return ResponseEntity.ok("註冊成功");
+
+    }
+    @PostMapping("/register")
+    public String registerUser() {
 
 
-//    @GetMapping("/oauthLogin")
-//    public Map<String, Object> getUser(@AuthenticationPrincipal OAuth2User oAuth2User) {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        // 获取当前认证对象的权限列表
-//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-//
-//        // 创建一个新的权限列表，添加原始权限和额外的 ROLE_USER 权限
-//        List<GrantedAuthority> updatedAuthorities = new ArrayList<>(authorities);
-//        updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-//
-//        // 创建一个新的 Authentication 对象，包含新的权限列表
-//        Authentication newAuthentication = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), updatedAuthorities);
-//
-//        // 将新的 Authentication 对象设置为当前认证对象
-//        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-//        return oAuth2User.getAttributes();
-//    }
+        return "註冊成功";
+
+    }
+
 
     @GetMapping("/oauthLogin")
     public String getUser(@AuthenticationPrincipal OAuth2User oAuth2User, HttpSession session) {
 
+        Passport passportDTO = accountService.getPassportFromOauth2Login(oAuth2User);
+
+        // 獲得oauth2原始權限列表
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 獲得權限列表
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-        // 創造新列表，並且加入ROLE_XXX的權限
+        // 創造新列表，並且加入ROLE_XXX的權限(自定義權限)
         List<GrantedAuthority> updatedAuthorities = new ArrayList<>(authorities);
-
-        //確認oauth登入會員是否是本站會員
-        String email = oAuth2User.getAttributes().get("email").toString();
-        Users tmpUser = usersRepository.findUsersByUserEmail(email);
-        Passport passportDTO = null;
-
-        if(tmpUser == null){
-            //若users找不到該使用者，則自動新增一個
-            String userFirstName= oAuth2User.getAttributes().get("name").toString();
-            String userLastName= oAuth2User.getAttributes().get("family_name").toString();
-            //String userPassWord = passwordEncoder.encode(authentication.getName());
-
-
-            updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-            Users user = new Users(
-                    userLastName,          // 姓
-                    userFirstName,         // 名
-                    email,              // email
-                    null,     // 預設密碼
-                    null,           // 性别
-                    null,            // 出生日期
-                    0,              // 購買違規次數
-                    new Date(),     // 最後登入時間
-                    0,              // 賣家資格
-                    null,       // 用戶狀態
-                    null,       // 銀行帳號(3碼)
-                    null     // 銀行帳號
-            );
-            tmpUser = usersRepository.save(user);
-            passportDTO = new Passport(userLastName,email, tmpUser.getUserId(), "ROLE_USER");
-            session.setAttribute("passportDTO", passportDTO);
-        }else{
-            Integer sellerQualified = tmpUser.getSellerQualified();
-            tmpUser.setLastLoginTime(new Date());
-            usersRepository.save(tmpUser);
-
-            if(sellerQualified == 0){
-                updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-            }else if(sellerQualified == 1){
-                updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_SELLER"));
-            }else if(sellerQualified == 2){
-                updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_SUGAR_SELLER"));
-            }
-            String UserAuthority = updatedAuthorities.get(updatedAuthorities.size() - 1).getAuthority();
-            passportDTO = new Passport(tmpUser.getLastName(),tmpUser.getUserEmail(), tmpUser.getUserId(), UserAuthority);
-            session.setAttribute("passportDTO", passportDTO);
-
-        }
-
-        // 创建一个新的 Authentication 对象，包含新的权限列表
+        updatedAuthorities.add(new SimpleGrantedAuthority(passportDTO.getRole()));
+        // new一個新的Authentication，包含就得與新的權限
         Authentication newAuthentication = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), updatedAuthorities);
-
-        // 将新的 Authentication 对象设置为当前认证对象
+        // 把新的Authentication更新到oauth2的權限
         SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
         Collection<? extends GrantedAuthority> oauthorities = newAuthentication.getAuthorities();
-        String lastAuthority = null;
-        if (!oauthorities.isEmpty()) {
-            lastAuthority = ((List<? extends GrantedAuthority>) oauthorities).get(oauthorities.size() - 1).getAuthority();
-        }
 
-        return passportDTO.toString();
+        session.setAttribute("passportDTO", passportDTO);
+        return passportDTO.toString()+"========="+oauthorities.toString();
     }
 
     @GetMapping("/userLogin")
     public String userLogin(Authentication authentication, HttpSession session){
 
-        // 取得使用者的帳號(email
+        // 取得使用者的帳號(email)
         String username = authentication.getName();
         // 取得使用者的權限
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String authority = authorities.iterator().next().getAuthority();
 
-        //確認是user或是employee
-        if(usersRepository.findUsersByUserEmail(username) != null){
-            Users tmpUser = usersRepository.findUsersByUserEmail(username);
-            tmpUser.setLastLoginTime(new Date());
-            usersRepository.save(tmpUser);
-            Passport passportDTO = new Passport(tmpUser.getLastName(),username, tmpUser.getUserId(), authority);
-            session.setAttribute("passportDTO", passportDTO);
-            return "Hello 會員: " + username + "你好 ! 你的權限為: " + authorities + passportDTO;
-        }else if (employeeRepository.findEmployeeByEmail(username) != null){
-            Passport passportDTO = new Passport(employeeRepository.findEmployeeByEmail(username).getLastName(),username, employeeRepository.findEmployeeByEmail(username).getEmployeeId(), authority);
-            session.setAttribute("passportDTO", passportDTO);
-            return "Hello 員工: " + username + "你好 ! 你的權限為: " + authorities + passportDTO;
-        }else {
-            return "查無此人" + username;
-        }
+        //核發通行證&存入httpsession
+        Passport passportDTO = accountService.getPassportFromFormLogin(username);
+        passportDTO.setRole(authority);
+        session.setAttribute("passportDTO", passportDTO);
+
+        return "Hello  " + passportDTO.getUsername() + "先生/女士 你好 ! 你的權限為: " +  passportDTO.getRole();
 
     }
-//    @GetMapping("/memberlogout")
-//    public String logout() {
-//        // 执行登出逻辑
-//        SecurityContextHolder.clearContext(); // 清除用户上下文
-//
-//        // 返回登出成功的消息或重定向到登出成功页面
-//        return "You have been logged out successfully.";
-//    }
+
 
 
 

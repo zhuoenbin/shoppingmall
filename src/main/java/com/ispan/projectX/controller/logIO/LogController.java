@@ -26,6 +26,9 @@ public class LogController {
         return "main";
     }
 
-
+    @GetMapping ("/registerPage")
+    public String showRegisterPage() {
+        return "register";
+    }
 
 }

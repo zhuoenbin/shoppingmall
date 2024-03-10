@@ -2,6 +2,7 @@ package com.ispan.projectX.config.securityconfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,7 +33,9 @@ public class SpringSecurityConfig {
 
         return  http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/loginPage","/mainPage").permitAll()
+
+                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**").permitAll()
+
 
 //                        .requestMatchers("/oauthLogin","/logoutPage").authenticated()
                         .requestMatchers("/userLogin").hasAnyRole("HR1", "M1", "USER","SELLER")
@@ -59,6 +62,8 @@ public class SpringSecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedPage("/access-denied")
                 )
+
+                .csrf(csrf -> csrf.disable())
 //
 //                .cors(cors -> cors
 //                        .configurationSource(createCoreConfig())
