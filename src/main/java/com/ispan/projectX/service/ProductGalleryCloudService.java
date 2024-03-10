@@ -21,6 +21,10 @@ public class ProductGalleryCloudService  {
     private ProductGalleryCloudRepository productGalleryCloudRepository;
 
 
+    public ProductGalleryCloud findByImgId(Integer imgId){
+        return productGalleryCloudRepository.findByImgId(imgId);
+    }
+
 
     public ProductGalleryCloud productUploadCloud(MultipartFile file, Product product,String imgDescription){
         try {
@@ -42,4 +46,35 @@ public class ProductGalleryCloudService  {
         }
 
     }
+
+    public ProductGalleryCloud updateImgCloud(MultipartFile file, Product product,ProductGalleryCloud cloud,String imgDescription)  {
+        //先刪除原本在cloudinary中對應的圖片
+        String publicId = cloud.getImgPathPublicId();
+        if(publicId!=null) {
+            Map delResult = null;
+            try {
+                delResult = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                System.out.println("Deleted image from Cloudinary: " + delResult);
+
+                //上傳新的圖片到producutFolder裡
+                Map data = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "productFolder"));
+                System.out.println("Upload new image succeed!");
+
+                //更新資料庫中對應的資料
+                cloud.setImgPath((String) data.get("url"));
+                cloud.setImgPathPublicId((String) data.get("public_id"));
+                cloud.setImgDescription(imgDescription);
+                productGalleryCloudRepository.save(cloud);
+                System.out.println("update db info succeed!");
+
+                return cloud;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        System.out.println("本來就沒有圖片");
+        return null;
+    }
+
 }
