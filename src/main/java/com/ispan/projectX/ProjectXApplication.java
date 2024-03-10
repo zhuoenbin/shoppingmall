@@ -9,12 +9,15 @@ import com.ispan.projectX.entity.Users;
 import com.ispan.projectX.entity.order.OrderTable;
 import com.ispan.projectX.entity.order.OrderDetail;
 import com.ispan.projectX.entity.product.Product;
+import com.ispan.projectX.service.AccountServiceImpl;
+import com.ispan.projectX.service.MailService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -34,9 +37,10 @@ public class ProjectXApplication {
 											   SellerRepository sellerRepository,
 											   OrderTableRepository orderTableRepository,
 											   ProductRepository productRepository,
-											   OrderDetailRepository orderDetailRepository) {
+											   OrderDetailRepository orderDetailRepository,
+											   AccountServiceImpl accountService) {
 		return runner -> {
-
+//			accountService.sendCodeForResetPassword("a50064xxx@gmail.com");
 
 			//訂單產生器
 //			generateOrderDetailWithProduct(orderDetailRepository,

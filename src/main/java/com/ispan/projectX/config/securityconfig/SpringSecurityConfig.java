@@ -34,7 +34,7 @@ public class SpringSecurityConfig {
         return  http
                 .authorizeHttpRequests(request -> request
 
-                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**").permitAll()
+                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**","/forgetPassword/**").permitAll()
 
 
 //                        .requestMatchers("/oauthLogin","/logoutPage").authenticated()

@@ -24,27 +24,21 @@ import java.util.*;
 @RestController
 public class LogRestController {
 
-    @Autowired
+
     private AccountService accountService;
 
-    private EmployeeRepository employeeRepository;
 
-    private UsersRepository usersRepository;
-
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public LogRestController(EmployeeRepository employeeRepository, UsersRepository usersRepository,PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-        this.employeeRepository = employeeRepository;
-        this.usersRepository = usersRepository;
+    public LogRestController(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @PostMapping("/register/formRegister")
     public ResponseEntity<String> registerUser(@ModelAttribute Users user) {
         System.out.println(user.toString());
         try {
-            // 調用userService的註冊方法
+            // 調用userService的註冊方法(密碼自動加密)
             accountService.register(user);
             return ResponseEntity.ok("註冊成功");
         } catch (Exception e) {
@@ -58,22 +52,14 @@ public class LogRestController {
     public ResponseEntity<String> restRegisterUser(@RequestBody Users user) {
 
         // 檢查 email 是否已經存在
-        if (!accountService.registerEmailCheak(user.getUserEmail())) {
+        if (!accountService.checkEmailIsEmpty(user.getUserEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("此 Email 已被註冊");
         }
-        // 加密密碼並設置最後登入時間
-        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+
         user.setLastLoginTime(new Date());
         // 保存用戶
         accountService.register(user);
         return ResponseEntity.ok("註冊成功");
-
-    }
-    @PostMapping("/register")
-    public String registerUser() {
-
-
-        return "註冊成功";
 
     }
 
