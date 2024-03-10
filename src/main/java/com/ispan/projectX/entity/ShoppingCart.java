@@ -1,5 +1,6 @@
 package com.ispan.projectX.entity;
 
+import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 

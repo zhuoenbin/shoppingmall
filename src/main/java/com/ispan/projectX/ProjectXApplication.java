@@ -19,13 +19,13 @@ public class ProjectXApplication {
 
 
 
-	@Bean
-	public CommandLineRunner commandLineRunner(ComplaintRepository complaintRepository,
-											   EmployeeRepository employeeRepository,
-											   UsersRepository usersRepository,
-											   SellerRepository sellerRepository,
-											   PushReceiverGroupRepository pushReceiverGroupRepository) {
-		return runner -> {
+//	@Bean
+//	public CommandLineRunner commandLineRunner(ComplaintRepository complaintRepository,
+//											   EmployeeRepository employeeRepository,
+//											   UsersRepository usersRepository,
+//											   SellerRepository sellerRepository,
+//											   PushReceiverGroupRepository pushReceiverGroupRepository) {
+//		return runner -> {
 //			Seller sel = sellerRepository.findBySellerId(2);
 //
 //			PushReceiverGroup group2 = new PushReceiverGroup();
@@ -39,8 +39,8 @@ public class ProjectXApplication {
 
 
 
-        };
-	}
+//	};
+//	}
 
 
 //	//新增seller，這資料表設計有點怪，必須抓user.id進去seller.id

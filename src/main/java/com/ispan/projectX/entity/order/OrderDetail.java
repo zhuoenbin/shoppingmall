@@ -1,6 +1,6 @@
 package com.ispan.projectX.entity.order;
 
-import com.ispan.projectX.entity.Product;
+import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
 
 @Entity

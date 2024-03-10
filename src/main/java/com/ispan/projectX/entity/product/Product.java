@@ -1,9 +1,13 @@
-package com.ispan.projectX.entity;
+package com.ispan.projectX.entity.product;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ispan.projectX.entity.Employee;
+import com.ispan.projectX.entity.Seller;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.NonNull;
 
 import java.util.Date;
 import java.util.List;
@@ -18,14 +22,17 @@ public class Product {
     @Column(name = "product_id")
     private Integer productId;
 
+    @NotBlank
     @Column(name = "product_name", nullable = false)
     private String productName;
+
 
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")
     private Seller seller;
+
 
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
@@ -36,7 +43,11 @@ public class Product {
     @Column(name = "unit_price")
     private Integer unitPrice;
 
-    @Column(name = "category_id")
+
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private ProductCategory category;
 
     @Column(name = "stock")
@@ -74,6 +85,18 @@ public class Product {
     @Column(name = "seller_discount_id")
     private Integer sellerDiscountId;
 
+    /////////////////////////////////////////
+
+    @PrePersist //在物件轉換到persistent狀態以前，做這個function
+    public void onCreate() {
+        if(listingDate==null && modifiedDate==null) {
+            listingDate=new Date();
+            modifiedDate=new Date();
+        }
+    }
+
+    /////////////////////////////////////////
+
     @OneToMany(mappedBy = "product",
             fetch = FetchType.LAZY ,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
@@ -86,7 +109,24 @@ public class Product {
                     CascadeType.DETACH, CascadeType.REFRESH})
     List<ProductGalleryCloud>productGalleryClouds;
 
+    ///////////////////////////////////
     public Product() {
+    }
+
+    public Product(Integer productId, String productName, Seller seller,
+                   Integer unitPrice, ProductCategory category, Integer stock,
+                   Integer reservedQuantity, Date listingDate,
+                   Date modifiedDate, String description) {
+        this.productId = productId;
+        this.productName = productName;
+        this.seller = seller;
+        this.unitPrice = unitPrice;
+        this.category = category;
+        this.stock = stock;
+        this.reservedQuantity = reservedQuantity;
+        this.listingDate = listingDate;
+        this.modifiedDate = modifiedDate;
+        this.description = description;
     }
 
     ///////////////////////////////////
@@ -237,24 +277,6 @@ public class Product {
 
 
     //////////////////////////////////
-
-    public Product(Integer productId, String productName, Seller seller,
-                   Integer unitPrice, ProductCategory category, Integer stock,
-                   Integer reservedQuantity, Date listingDate,
-                   Date modifiedDate, String description) {
-        this.productId = productId;
-        this.productName = productName;
-        this.seller = seller;
-        this.unitPrice = unitPrice;
-        this.category = category;
-        this.stock = stock;
-        this.reservedQuantity = reservedQuantity;
-        this.listingDate = listingDate;
-        this.modifiedDate = modifiedDate;
-        this.description = description;
-    }
-
-
 
     @Override
     public String toString() {

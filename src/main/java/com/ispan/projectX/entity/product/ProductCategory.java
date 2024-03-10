@@ -1,4 +1,4 @@
-package com.ispan.projectX.entity;
+package com.ispan.projectX.entity.product;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -30,9 +30,50 @@ public class ProductCategory {
                     CascadeType.DETACH, CascadeType.REFRESH})
     List<Product>products;
 
+    ////////////////////////////////////
     public ProductCategory() {
     }
 
+    public ProductCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    ////////////////////////////////////
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryDescription() {
+        return categoryDescription;
+    }
+
+    public void setCategoryDescription(String categoryDescription) {
+        this.categoryDescription = categoryDescription;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+
+    ////////////////////////////////////
 
     @Override
     public String toString() {
