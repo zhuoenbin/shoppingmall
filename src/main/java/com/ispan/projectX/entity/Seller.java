@@ -3,10 +3,13 @@ package com.ispan.projectX.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import com.ispan.projectX.entity.order.OrderTable;
 import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -69,14 +72,37 @@ public class Seller {
             fetch = FetchType.LAZY ,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
-    List<Product> products;
+    private List<OrderTable> orderTables;
+
+
+
+    @OneToMany(mappedBy = "seller",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                        CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "productId")
+    private List<Product> products;
 
 
     public Seller() {
     }
 
-////////////////////////////////////////
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
 
+    public void setOrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
+    public void add(OrderTable orderTable){
+        if(orderTables == null){
+            orderTables = new ArrayList<>();
+        }
+        orderTables.add(orderTable);
+        orderTable.setSeller(this);
+
+    }
 
     public Integer getSellerId() {
         return sellerId;

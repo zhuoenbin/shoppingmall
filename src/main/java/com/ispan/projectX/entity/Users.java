@@ -1,10 +1,13 @@
 package com.ispan.projectX.entity;
 
+
+import com.ispan.projectX.entity.order.OrderTable;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
+
 
 @Entity
 @Table(name = "user")
@@ -24,7 +27,7 @@ public class Users {
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
 
-    @Column(name = "user_password", nullable = false)
+    @Column(name = "user_password")
     private String userPassword;
 
     @Column(name = "user_gender", length = 10)
@@ -51,7 +54,29 @@ public class Users {
     @Column(name = "bank_account1", length = 50)
     private String bankAccount1;
 
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<OrderTable> orderTables;
 
+
+
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
+
+    public void setOrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
+    public void add(OrderTable orderTable){
+        if(orderTables == null){
+            orderTables = new ArrayList<>();
+        }
+        orderTables.add(orderTable);
+        orderTable.setUser(this);
+    }
 
     public Users() {
     }
@@ -174,6 +199,7 @@ public class Users {
     public void setBankAccount1(String bankAccount1) {
         this.bankAccount1 = bankAccount1;
     }
+
 
 
     @Override

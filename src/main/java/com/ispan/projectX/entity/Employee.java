@@ -3,8 +3,9 @@ package com.ispan.projectX.entity;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -59,12 +60,39 @@ public class Employee {
     @Column(name = "db_authority", length = 10)
     private String dbAuthority;
 
-
+//    @OneToMany(mappedBy = "employee",
+//            fetch = FetchType.LAZY ,
+//            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+//                    CascadeType.DETACH, CascadeType.REFRESH})
+//    private List<Complaint> complaint;
 
     public Employee() {
     }
 
-    /////////////////////////////////////
+    public Employee(String firstName, String lastName, String email, String password, String phone, Date hireDate, Date birthDate, String city, String district, String address, String department, String title, String dbAuthority) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.hireDate = hireDate;
+        this.birthDate = birthDate;
+        this.city = city;
+        this.district = district;
+        this.address = address;
+        this.department = department;
+        this.title = title;
+        this.dbAuthority = dbAuthority;
+    }
+
+//    public void add(Complaint tmpComplaint){
+//        if(complaint==null){
+//            complaint = new ArrayList<>();
+//        }
+//        complaint.add(tmpComplaint);
+//
+//        tmpComplaint.setEmployee(this);
+//    }
 
     public Integer getEmployeeId() {
         return employeeId;
@@ -177,10 +205,6 @@ public class Employee {
     public void setDbAuthority(String dbAuthority) {
         this.dbAuthority = dbAuthority;
     }
-
-
-    ////////////////////////////////////
-
 
 
     @Override
