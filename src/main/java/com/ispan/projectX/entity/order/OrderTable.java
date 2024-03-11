@@ -1,17 +1,19 @@
 package com.ispan.projectX.entity.order;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ispan.projectX.entity.Seller;
 import com.ispan.projectX.entity.Users;
 import jakarta.persistence.*;
-
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "order_table")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderId")
 public class OrderTable {
 
     @Id
@@ -19,19 +21,20 @@ public class OrderTable {
     @Column(name = "order_id")
     private Integer orderId;
 
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "buyer_id")
+    @JoinColumn(name = "buyer_id", referencedColumnName = "user_id")
     private Users user;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "seller_id")
+    @JoinColumn(name = "seller_id", referencedColumnName = "seller_id")
     private Seller seller;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private Date orderDate;
 
     @Column(name = "total_price")
     private Integer totalPrice;
@@ -60,24 +63,38 @@ public class OrderTable {
     @Column(name = "payment_status")
     private Integer paymentStatus;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "seller_confirm_date")
     private Date sellerConfirmDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "seller_ship_date")
     private Date sellerShipDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "logistics_ship_date")
     private Date logisticsShipDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "logistics_arrival_date")
     private Date logisticsArrivalDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "buyer_receive_date")
     private Date buyerReceiveDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "buyer_confirm_date")
     private Date buyerConfirmDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     @Column(name = "order_cancel_date")
     private Date orderCancelDate;
 
@@ -96,33 +113,34 @@ public class OrderTable {
     @Column(name = "freight")
     private Integer freight;
 
+
+    /////////////////////////////
+
+    @PrePersist //在物件轉換到persistent狀態以前，做這個function
+    public void onCreate() {
+        if(orderDate==null) {
+            orderDate=new Date();
+        }
+    }
+
+    /////////////////////////////
     @OneToMany(mappedBy = "order",
-                fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
     private List<OrderDetail> orderDetails;
 
+    /////////////////////////////
     public OrderTable() {
     }
 
-    public OrderTable(Users user, Seller seller, LocalDateTime orderDate, Integer totalPrice, Integer sellerDiscountPrice, Integer sellerCouponPrice, Integer officialDiscountPrice, Integer officialCouponPrice, String discountDescription, String couponDescription, Integer paymentMethod, Integer paymentStatus, Date sellerConfirmDate, Date sellerShipDate, Date logisticsShipDate, Date logisticsArrivalDate, Date buyerReceiveDate, Date buyerConfirmDate, Date orderCancelDate, String shippingCompanyName, String city, String district, String address, Integer freight) {
+    public OrderTable(Integer orderId, Users user, Seller seller, Date orderDate, Integer totalPrice, Integer paymentMethod, String shippingCompanyName, String city, String district, String address, Integer freight) {
+        this.orderId = orderId;
         this.user = user;
         this.seller = seller;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
-        this.sellerDiscountPrice = sellerDiscountPrice;
-        this.sellerCouponPrice = sellerCouponPrice;
-        this.officialDiscountPrice = officialDiscountPrice;
-        this.officialCouponPrice = officialCouponPrice;
-        this.discountDescription = discountDescription;
-        this.couponDescription = couponDescription;
         this.paymentMethod = paymentMethod;
-        this.paymentStatus = paymentStatus;
-        this.sellerConfirmDate = sellerConfirmDate;
-        this.sellerShipDate = sellerShipDate;
-        this.logisticsShipDate = logisticsShipDate;
-        this.logisticsArrivalDate = logisticsArrivalDate;
-        this.buyerReceiveDate = buyerReceiveDate;
-        this.buyerConfirmDate = buyerConfirmDate;
-        this.orderCancelDate = orderCancelDate;
         this.shippingCompanyName = shippingCompanyName;
         this.city = city;
         this.district = district;
@@ -130,22 +148,7 @@ public class OrderTable {
         this.freight = freight;
     }
 
-
-    public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
-    }
-
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
-    }
-
-    public void addOrderDetail(OrderDetail orderDetail) {
-        if(orderDetails == null) {
-            orderDetails = new ArrayList<>();
-        }
-        orderDetails.add(orderDetail);
-        orderDetail.setOrder(this);
-    }
+    /////////////////////////////
 
     public Integer getOrderId() {
         return orderId;
@@ -171,11 +174,11 @@ public class OrderTable {
         this.seller = seller;
     }
 
-    public LocalDateTime getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -347,11 +350,22 @@ public class OrderTable {
         this.freight = freight;
     }
 
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+
+    /////////////////////////////
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("OrderTable{");
         sb.append("orderId=").append(orderId);
-        sb.append(", user=").append(user);
+        sb.append(", buyer=").append(user);
         sb.append(", seller=").append(seller);
         sb.append(", orderDate=").append(orderDate);
         sb.append(", totalPrice=").append(totalPrice);
