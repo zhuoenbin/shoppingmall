@@ -5,24 +5,25 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-@Entity
-@Table(name = "shopping_cart")
-public class ShoppingCart {
+    @Entity
+    @Table(name = "shopping_cart")
+    public class ShoppingCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "shopping_cart_id")
     private Integer shoppingCartId;
 
     // 多對一 user table
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name="user_id")
     private Users users;
 
     // 多對一 product table
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name="product_id")
     private Product product;
+
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -40,7 +41,20 @@ public class ShoppingCart {
     @Column(name = "updated_time")
     private Date updatedTime;
 
-    public Integer getShoppingCartId() {
+    public ShoppingCart() {
+    }
+
+    public ShoppingCart(Users users, Product product, Integer quantity, Integer unitPrice, Date createdTime, Date updatedTime) {
+        this.shoppingCartId = shoppingCartId;
+        this.users = users;
+        this.product = product;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.createdTime = createdTime;
+        this.updatedTime = updatedTime;
+    }
+
+        public Integer getShoppingCartId() {
         return shoppingCartId;
     }
 
@@ -78,5 +92,36 @@ public class ShoppingCart {
 
     public void setUpdatedTime(Date updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+        @Override
+        public String toString() {
+            final StringBuffer sb = new StringBuffer("ShoppingCart{");
+            sb.append("shoppingCartId=").append(shoppingCartId);
+            sb.append(", users=").append(users != null ? users.getUserId() : null);
+            sb.append(", product=").append(product != null ? product.getProductId() : null);
+            sb.append(", quantity=").append(quantity);
+            sb.append(", unitPrice=").append(unitPrice);
+            sb.append(", createdTime=").append(createdTime);
+            sb.append(", updatedTime=").append(updatedTime);
+            sb.append('}');
+            return sb.toString();
+        }
+
+
+        public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

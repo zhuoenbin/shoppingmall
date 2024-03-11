@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>商城首頁</title>
+</head>
+<body style="height: 100%;">
+<div th:replace="~{Layout/navbar}"></div>
+<div class="container" style="padding: 20px;">
+	<h1>首頁</h1>
+
+        <th:block th:each=" product : ${page.content}">
+
+<!--            <div class="card" style="position: relative;">-->
+<!--                <div class="card-header" style="padding: 5px">-->
+<!--                    商品名  <span th:text="${product.productName}"></span>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    賣家 <span th:text="${product.seller.sellerName}"></span>-->
+<!--                    <br>-->
+<!--                    商品上架時間 <span th:text="${#dates.format(product.listingDate, 'yyyy年MM月dd日 HH:mm:ss')}"></span>-->
+<!--                    <a class="btn btn-primary" style="position: absolute; right: 20px; top: 50%" th:href="@{/shoppingCart/add?(productId=${product.productId})}">加入購物車</a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <span class="card" style="position: relative; width: 18rem; margin: 20px; padding: 20px 20px 40px">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    商品名 <span class="card-title" th:text="${product.productName}"></span>
+                    <br>
+                    賣家 <span class="card-text" th:text="${product.seller.sellerName}"></span>
+                    <br>
+                    商品上架時間 <span th:text="${#dates.format(product.listingDate, 'yyyy年MM月dd日 HH:mm:ss')}"></span>
+                    <br>
+                    <a class="btn btn-primary" style="position: absolute; right: 20px;" th:href="@{/shoppingCart/add?(productId=${product.productId})}">加入購物車</a>
+                </div>
+            </span>
+
+            <br>
+        </th:block>
+
+
+<ul class="pagination" th:if="${page.totalElements != 0}">
+
+    <th:block th:switch="${page.number != 0}">
+        <li class="page-item" th:case="${true}">
+            <a class="page-link" th:href="@{/?(p=${page.number})}">Previous</a>
+        </li>
+        <li class="page-item" th:case="${false}">
+            <a class="page-link">Previous</a>
+        </li>
+    </th:block>
+
+    <!-- 頁數 -->
+    <th:block th:each=" pageNumber : ${#numbers.sequence(1, page.totalPages) }">
+        <th:block th:switch="${page.number+1 != pageNumber}">
+            <li class="page-item" th:case="${true}">
+                <a class="page-link" th:href="@{/?(p=${pageNumber})}">[[${pageNumber}]]</a>
+            </li>
+            <li class="page-item active" th:case="${false}">
+                <span class="page-link" th:text="${pageNumber}"></span>
+            </li>
+        </th:block>
+    </th:block>
+
+    <th:block th:switch="${page.totalPages != page.number + 1}">
+        <li class="page-item" th:case="${true}">
+            <a class="page-link" th:href="@{/?(p=${page.number + 2})}">Next</a>
+        </li>
+        <li class="page-item" th:case="${false}">
+            <a class="page-link">Next</a>
+        </li>
+    </th:block>
+
+</ul>
+</div>>
+</body>
+</html>

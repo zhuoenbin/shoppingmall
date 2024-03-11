@@ -9,7 +9,7 @@ public class EmployeePermissions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "permission_id")
-    private Long permissionId;
+    private Integer permissionId;
 
     @Column(name = "department", nullable = false)
     private String department;
@@ -32,7 +32,7 @@ public class EmployeePermissions {
     public EmployeePermissions() {
     }
 
-    public EmployeePermissions(Long permissionId, String department, String title, String dbAuthority, String dbAuthorityDescription, String webpageTables, String webpageDetails) {
+    public EmployeePermissions(Integer permissionId, String department, String title, String dbAuthority, String dbAuthorityDescription, String webpageTables, String webpageDetails) {
         this.permissionId = permissionId;
         this.department = department;
         this.title = title;
@@ -42,11 +42,11 @@ public class EmployeePermissions {
         this.webpageDetails = webpageDetails;
     }
 
-    public Long getPermissionId() {
+    public Integer getPermissionId() {
         return permissionId;
     }
 
-    public void setPermissionId(Long permissionId) {
+    public void setPermissionId(Integer permissionId) {
         this.permissionId = permissionId;
     }
 

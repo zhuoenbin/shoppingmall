@@ -35,6 +35,46 @@ public class ProductGalleryCloud {
         this.imgDescription = imgDescription;
     }
 
+    public Long getImgId() {
+        return imgId;
+    }
+
+    public void setImgId(Long imgId) {
+        this.imgId = imgId;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
+
+    public String getImgPathPublicId() {
+        return imgPathPublicId;
+    }
+
+    public void setImgPathPublicId(String imgPathPublicId) {
+        this.imgPathPublicId = imgPathPublicId;
+    }
+
+    public String getImgDescription() {
+        return imgDescription;
+    }
+
+    public void setImgDescription(String imgDescription) {
+        this.imgDescription = imgDescription;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("ProductGalleryCloud{");

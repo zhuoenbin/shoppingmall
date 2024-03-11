@@ -1,6 +1,5 @@
 package com.ispan.projectX.entity;
 
-import com.ispan.projectX.entity.pushmsg.PushReceiverGroup;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,12 +13,12 @@ public class Seller {
     @Id
     @Column(name = "seller_id")
     private Integer sellerId;
-    @OneToOne
-    @JoinColumn(name = "seller_id", referencedColumnName = "user_id")
-    private Users user;
+
+    @Column(name = "seller_user_id")
+    private Integer sellerUserId;
 
     @Column(name = "seller_name")
-    private Integer sellerName;
+    private String sellerName;
 
     @Column(name = "seller_image", length = 1000)
     private String sellerImage;
@@ -57,12 +56,25 @@ public class Seller {
     @Column(name = "bank_account3", length = 50)
     private String bankAccount3;
 
-    @OneToMany(mappedBy = "seller",
-            fetch = FetchType.LAZY ,
-            cascade = {CascadeType.ALL})
-    private List<PushReceiverGroup> pushReceiverGroups;
-
     public Seller() {
+    }
+
+    public Seller(Integer sellerId, Integer sellerUserId, String sellerName, String sellerImage, String sellerImagePublicId, String sellerIntroduce, Date joinTime, Date lastLoginTime, Integer sellerViolationCount, String bankIdAccount1, String bankAccount1, String bankIdAccount2, String bankAccount2, String bankIdAccount3, String bankAccount3) {
+        this.sellerId = sellerId;
+        this.sellerUserId = sellerUserId;
+        this.sellerName = sellerName;
+        this.sellerImage = sellerImage;
+        this.sellerImagePublicId = sellerImagePublicId;
+        this.sellerIntroduce = sellerIntroduce;
+        this.joinTime = joinTime;
+        this.lastLoginTime = lastLoginTime;
+        this.sellerViolationCount = sellerViolationCount;
+        this.bankIdAccount1 = bankIdAccount1;
+        this.bankAccount1 = bankAccount1;
+        this.bankIdAccount2 = bankIdAccount2;
+        this.bankAccount2 = bankAccount2;
+        this.bankIdAccount3 = bankIdAccount3;
+        this.bankAccount3 = bankAccount3;
     }
 
     public Integer getSellerId() {
@@ -73,19 +85,19 @@ public class Seller {
         this.sellerId = sellerId;
     }
 
-    public Users getUser() {
-        return user;
+    public Integer getSellerUserId() {
+        return sellerUserId;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setSellerUserId(Integer sellerUserId) {
+        this.sellerUserId = sellerUserId;
     }
 
-    public Integer getSellerName() {
+    public String getSellerName() {
         return sellerName;
     }
 
-    public void setSellerName(Integer sellerName) {
+    public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
     }
 
@@ -185,27 +197,11 @@ public class Seller {
         this.bankAccount3 = bankAccount3;
     }
 
-    public List<PushReceiverGroup> getPushReceiverGroups() {
-        return pushReceiverGroups;
-    }
-
-    public void setPushReceiverGroups(List<PushReceiverGroup> pushReceiverGroups) {
-        this.pushReceiverGroups = pushReceiverGroups;
-    }
-
-    public void add(PushReceiverGroup tmpPushReceiverGroup) {
-        if(pushReceiverGroups==null){
-            pushReceiverGroups = new ArrayList<>();
-        }
-        pushReceiverGroups.add(tmpPushReceiverGroup);
-        tmpPushReceiverGroup.setSeller(this);
-    }
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Seller{");
 
-        sb.append(", user=").append(user);
+        sb.append(", user=").append(sellerUserId);
         sb.append(", sellerName=").append(sellerName);
         sb.append(", sellerImage='").append(sellerImage).append('\'');
         sb.append(", sellerImagePublicId='").append(sellerImagePublicId).append('\'');
@@ -222,4 +218,27 @@ public class Seller {
         sb.append('}');
         return sb.toString();
     }
+
+    @OneToMany(mappedBy = "seller",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<Product> product;
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
+
+    public void addProduct(Product tmpProduct){
+        if(product==null){
+            product = new ArrayList<>();
+        }
+        product.add(tmpProduct);
+
+        tmpProduct.setSeller(this);
+    }
+
 }

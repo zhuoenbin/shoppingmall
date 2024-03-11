@@ -3,7 +3,9 @@ package com.ispan.projectX.entity;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="product")
@@ -26,7 +28,7 @@ public class Product {
     @Column(name="unit_price")
     private Integer unitPrice;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Integer categoryId;
 
     @Column(name="stock")
@@ -51,14 +53,11 @@ public class Product {
     @Column(name="product_status", length = 20)
     private String productStatus;
 
+    @Column(name="product_status_des", length = 200)
+    private String productStatusDes;
+
     @Column(name="promotion_id")
     private Integer promotionId;
-
-    @Column(name="official_discount_id")
-    private Integer officialDiscountId;
-
-    @Column(name="seller_discount_id")
-    private Integer sellerDiscountId;
 
     @Column(name="official_discount_id")
     private Integer officialActivityDiscount;
@@ -66,14 +65,14 @@ public class Product {
     @Column(name="seller_discount_id")
     private Integer sellerActivityDiscount;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "seller_id", referencedColumnName = "seller_id", insertable = false, updatable = false)
     private Seller seller;
 
     public Product() {
     }
 
-    public Product(Integer productId, String productName, Integer sellerId, Integer employeeId, Integer unitPrice, Integer categoryId, Integer stock, Integer reservedQuantity, Date listingDate, Date modifiedDate, String description, String productStatus, Integer promotionId, Integer officialDiscountId, Integer sellerDiscountId, Integer officialActivityDiscount, Integer sellerActivityDiscount, Seller seller) {
+    public Product(Integer productId, String productName, Integer sellerId, Integer employeeId, Integer unitPrice, Integer categoryId, Integer stock, Integer reservedQuantity, Date listingDate, Date modifiedDate, String description, String productStatus, String productStatusDes, Integer promotionId, Integer officialActivityDiscount, Integer sellerActivityDiscount, Seller seller) {
         this.productId = productId;
         this.productName = productName;
         this.sellerId = sellerId;
@@ -86,9 +85,8 @@ public class Product {
         this.modifiedDate = modifiedDate;
         this.description = description;
         this.productStatus = productStatus;
+        this.productStatusDes = productStatusDes;
         this.promotionId = promotionId;
-        this.officialDiscountId = officialDiscountId;
-        this.sellerDiscountId = sellerDiscountId;
         this.officialActivityDiscount = officialActivityDiscount;
         this.sellerActivityDiscount = sellerActivityDiscount;
         this.seller = seller;
@@ -198,22 +196,6 @@ public class Product {
         this.promotionId = promotionId;
     }
 
-    public Integer getOfficialDiscountId() {
-        return officialDiscountId;
-    }
-
-    public void setOfficialDiscountId(Integer officialDiscountId) {
-        this.officialDiscountId = officialDiscountId;
-    }
-
-    public Integer getSellerDiscountId() {
-        return sellerDiscountId;
-    }
-
-    public void setSellerDiscountId(Integer sellerDiscountId) {
-        this.sellerDiscountId = sellerDiscountId;
-    }
-
     public Integer getOfficialActivityDiscount() {
         return officialActivityDiscount;
     }
@@ -238,6 +220,14 @@ public class Product {
         this.seller = seller;
     }
 
+    public String getProductStatusDes() {
+        return productStatusDes;
+    }
+
+    public void setProductStatusDes(String productStatusDes) {
+        this.productStatusDes = productStatusDes;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Product{");
@@ -253,12 +243,57 @@ public class Product {
         sb.append(", modifiedDate=").append(modifiedDate);
         sb.append(", description='").append(description).append('\'');
         sb.append(", productStatus='").append(productStatus).append('\'');
+        sb.append(", productStatusDes='").append(productStatusDes).append('\'');
         sb.append(", promotionId=").append(promotionId);
-        sb.append(", officialDiscountId=").append(officialDiscountId);
-        sb.append(", sellerDiscountId=").append(sellerDiscountId);
         sb.append(", officialActivityDiscount=").append(officialActivityDiscount);
-
+        sb.append(", sellerActivityDiscount=").append(sellerActivityDiscount);
+        sb.append(", seller=").append(seller);
         sb.append('}');
         return sb.toString();
     }
+
+    @OneToMany(mappedBy = "product",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<ShoppingCart> shoppingCart;
+
+    public List<ShoppingCart> getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(List<ShoppingCart> shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public void add(ShoppingCart tmpShoppingCart){
+        if(shoppingCart==null){
+            shoppingCart = new ArrayList<>();
+        }
+        shoppingCart.add(tmpShoppingCart);
+
+        tmpShoppingCart.setProduct(this);
+    }
+
+    @OneToMany(mappedBy = "product",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<ProductGallery> productGallery;
+
+    public List<ProductGallery> getProductGallery() {
+        return productGallery;
+    }
+
+    public void setProductGallery(List<ProductGallery> productGallery) {
+        this.productGallery = productGallery;
+    }
+
+    public void add(ProductGallery tmpProductGallery){
+        if(productGallery==null){
+            productGallery = new ArrayList<>();
+        }
+        productGallery.add(tmpProductGallery);
+
+        tmpProductGallery.setProduct(this);
+    }
+
 }

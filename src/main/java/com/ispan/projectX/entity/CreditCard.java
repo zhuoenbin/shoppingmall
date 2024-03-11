@@ -11,9 +11,9 @@ public class CreditCard {
     @Column(name = "credit_id")
     private Long creditId;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private Users users;
 
     @Column(name = "card_number", length = 16, nullable = false)
     private String cardNumber;
@@ -42,9 +42,9 @@ public class CreditCard {
     public CreditCard() {
     }
 
-    public CreditCard(Long creditId, Users user, String cardNumber, String cardCVCCode, int cardExpiryYear, int cardExpiryMonth, String cardHolderName, String city, String district, String address) {
+    public CreditCard(Long creditId, Users users, String cardNumber, String cardCVCCode, int cardExpiryYear, int cardExpiryMonth, String cardHolderName, String city, String district, String address) {
         this.creditId = creditId;
-        this.user = user;
+        this.users = users;
         this.cardNumber = cardNumber;
         this.cardCVCCode = cardCVCCode;
         this.cardExpiryYear = cardExpiryYear;
@@ -63,12 +63,12 @@ public class CreditCard {
         this.creditId = creditId;
     }
 
-    public Users getUser() {
-        return user;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setUsers(Users user) {
+        this.users = user;
     }
 
     public String getCardNumber() {
@@ -139,7 +139,7 @@ public class CreditCard {
     public String toString() {
         final StringBuffer sb = new StringBuffer("CreditCard{");
         sb.append("creditId=").append(creditId);
-        sb.append(", user=").append(user);
+        sb.append(", user=").append(users);
         sb.append(", cardNumber='").append(cardNumber).append('\'');
         sb.append(", cardCVCCode='").append(cardCVCCode).append('\'');
         sb.append(", cardExpiryYear=").append(cardExpiryYear);

@@ -1,6 +1,5 @@
 package com.ispan.projectX.entity;
 
-import com.ispan.projectX.entity.pushmsg.UserPushMessage;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -51,11 +50,6 @@ public class Users {
 
     @Column(name = "bank_account1", length = 50)
     private String bankAccount1;
-
-    @OneToMany(mappedBy = "user",
-            fetch = FetchType.LAZY ,
-            cascade = {CascadeType.ALL})
-    private List<UserPushMessage> userPushMessages;
 
     public Users() {
     }
@@ -179,23 +173,6 @@ public class Users {
         this.bankAccount1 = bankAccount1;
     }
 
-    public List<UserPushMessage> getUserPushMessages() {
-        return userPushMessages;
-    }
-
-    public void setUserPushMessages(List<UserPushMessage> userPushMessages) {
-        this.userPushMessages = userPushMessages;
-    }
-
-    public void add(UserPushMessage userPushMessage) {
-        if (userPushMessages == null) {
-            userPushMessages = new ArrayList<>();
-        }
-        userPushMessages.add(userPushMessage);
-        userPushMessage.setUser(this);
-    }
-
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("User{");
@@ -215,4 +192,49 @@ public class Users {
         sb.append('}');
         return sb.toString();
     }
+
+    @OneToMany(mappedBy = "users",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<ShoppingCart> shoppingCart;
+
+    public List<ShoppingCart> getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(List<ShoppingCart> shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public void addShoppingCart(ShoppingCart tmpShoppingCart){
+        if(shoppingCart==null){
+            shoppingCart = new ArrayList<>();
+        }
+        shoppingCart.add(tmpShoppingCart);
+
+        tmpShoppingCart.setUsers(this);
+    }
+
+    @OneToMany(mappedBy = "users",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<CreditCard> creditCard;
+
+    public List<CreditCard> getCreditCard() {
+        return creditCard;
+    }
+
+    public void setCreditCard(List<CreditCard> creditCard) {
+        this.creditCard = creditCard;
+    }
+
+    public void addCreditCard(CreditCard tmpCreditCard){
+        if(creditCard==null){
+            creditCard = new ArrayList<>();
+        }
+        creditCard.add(tmpCreditCard);
+
+        tmpCreditCard.setUsers(this);
+    }
+
 }

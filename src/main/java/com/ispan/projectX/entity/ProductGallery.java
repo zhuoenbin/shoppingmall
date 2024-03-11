@@ -9,9 +9,9 @@ public class ProductGallery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "img_id")
-    private Long imgId;
+    private Integer imgId;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -24,18 +24,18 @@ public class ProductGallery {
     public ProductGallery() {
     }
 
-    public ProductGallery(Long imgId, Product product, String imgPath, String imgDescription) {
+    public ProductGallery(Integer imgId, Product product, String imgPath, String imgDescription) {
         this.imgId = imgId;
         this.product = product;
         this.imgPath = imgPath;
         this.imgDescription = imgDescription;
     }
 
-    public Long getImgId() {
+    public Integer getImgId() {
         return imgId;
     }
 
-    public void setImgId(Long imgId) {
+    public void setImgId(Integer imgId) {
         this.imgId = imgId;
     }
 

@@ -54,12 +54,6 @@ public class Employee {
     @Column(name = "db_authority", length = 10)
     private String dbAuthority;
 
-    @OneToMany(mappedBy = "employee",
-            fetch = FetchType.LAZY ,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Complaint> complaint;
-
     public Employee() {
     }
 
@@ -77,15 +71,6 @@ public class Employee {
         this.department = department;
         this.title = title;
         this.dbAuthority = dbAuthority;
-    }
-
-    public void add(Complaint tmpComplaint){
-        if(complaint==null){
-            complaint = new ArrayList<>();
-        }
-        complaint.add(tmpComplaint);
-
-        tmpComplaint.setEmployee(this);
     }
 
     public Integer getEmployeeId() {
@@ -198,14 +183,6 @@ public class Employee {
 
     public void setDbAuthority(String dbAuthority) {
         this.dbAuthority = dbAuthority;
-    }
-
-    public List<Complaint> getComplaint() {
-        return complaint;
-    }
-
-    public void setComplaint(List<Complaint> complaint) {
-        this.complaint = complaint;
     }
 
     @Override
