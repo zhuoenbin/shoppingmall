@@ -30,9 +30,13 @@ public class Employee {
     @Column(name = "phone")
     private String phone;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "hire_date")
     private Date hireDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "birth_date")
     private Date birthDate;
 
@@ -200,13 +204,13 @@ public class Employee {
         this.dbAuthority = dbAuthority;
     }
 
-//    public List<Complaint> getComplaint() {
-//        return complaint;
-//    }
-//
-//    public void setComplaint(List<Complaint> complaint) {
-//        this.complaint = complaint;
-//    }
+    public List<Complaint> getComplaint() {
+        return complaint;
+    }
+
+    public void setComplaint(List<Complaint> complaint) {
+        this.complaint = complaint;
+    }
 
     @Override
     public String toString() {

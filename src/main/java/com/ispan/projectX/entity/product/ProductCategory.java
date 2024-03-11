@@ -1,8 +1,16 @@
 package com.ispan.projectX.entity.product;
 
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.persistence.GenerationType;
+
+import java.util.List;
 
 @Entity
+@Table(name = "product_category")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "categoryId")
 public class ProductCategory {
 
     @Id
@@ -10,21 +18,27 @@ public class ProductCategory {
     @Column(name = "category_id")
     private Integer categoryId;
 
-    @Column(name = "category_name")
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
 
     @Column(name = "category_description")
     private String categoryDescription;
 
+    @OneToMany(mappedBy = "category",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    List<Product>products;
 
+    ////////////////////////////////////
     public ProductCategory() {
     }
 
-    public ProductCategory(String categoryName, String categoryDescription) {
-
+    public ProductCategory(String categoryName) {
         this.categoryName = categoryName;
-        this.categoryDescription = categoryDescription;
     }
+
+    ////////////////////////////////////
 
     public Integer getCategoryId() {
         return categoryId;
@@ -50,6 +64,17 @@ public class ProductCategory {
         this.categoryDescription = categoryDescription;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+
+    ////////////////////////////////////
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("ProductCategory{");
@@ -59,4 +84,5 @@ public class ProductCategory {
         sb.append('}');
         return sb.toString();
     }
+
 }

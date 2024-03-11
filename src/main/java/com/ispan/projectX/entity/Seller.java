@@ -1,17 +1,20 @@
 package com.ispan.projectX.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import com.ispan.projectX.entity.order.OrderTable;
+import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 @Entity
 @Table(name = "seller")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "sellerId")
 public class Seller {
 
     @Id
@@ -33,9 +36,13 @@ public class Seller {
     @Column(name = "seller_introduce", length = 500)
     private String sellerIntroduce;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "join_time")
     private Date joinTime;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//在JAVA環境內的時間格式(輸入時調整，輸出為另一種)，EE為星期幾
     @Column(name = "last_login_time")
     private Date lastLoginTime;
 
@@ -66,6 +73,10 @@ public class Seller {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<OrderTable> orderTables;
 
+
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    List<Product> products;
 
 
     public Seller() {
@@ -104,11 +115,11 @@ public class Seller {
         this.user = user;
     }
 
-    public String getSellerName() {
+    public Integer getSellerName() {
         return sellerName;
     }
 
-    public void setSellerName(String sellerName) {
+    public void setSellerName(Integer sellerName) {
         this.sellerName = sellerName;
     }
 
@@ -208,8 +219,15 @@ public class Seller {
         this.bankAccount3 = bankAccount3;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
 
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
+    //////////////////////////////////////////
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Seller{");
