@@ -1,9 +1,11 @@
 package com.ispan.projectX.entity;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Date;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -204,13 +206,6 @@ public class Employee {
         this.dbAuthority = dbAuthority;
     }
 
-    public List<Complaint> getComplaint() {
-        return complaint;
-    }
-
-    public void setComplaint(List<Complaint> complaint) {
-        this.complaint = complaint;
-    }
 
     @Override
     public String toString() {

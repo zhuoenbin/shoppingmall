@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class Passport implements Serializable {
     private String username;
-
     private String email;
     private Integer userId;
     private String role;

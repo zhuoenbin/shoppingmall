@@ -7,7 +7,7 @@ import com.ispan.projectX.entity.Seller;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.NonNull;
+
 
 import java.util.Date;
 import java.util.List;
@@ -101,13 +101,13 @@ public class Product {
             fetch = FetchType.LAZY ,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
-    List<ProductGallery> productGalleries;
+    private List<ProductGallery> productGalleries;
 
     @OneToMany(mappedBy = "product",
             fetch = FetchType.LAZY ,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
-    List<ProductGalleryCloud>productGalleryClouds;
+    private List<ProductGalleryCloud>productGalleryClouds;
 
     ///////////////////////////////////
     public Product() {

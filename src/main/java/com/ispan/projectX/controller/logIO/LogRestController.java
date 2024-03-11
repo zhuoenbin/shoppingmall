@@ -104,7 +104,27 @@ public class LogRestController {
 
     }
 
+    //忘記密碼，發送驗證信
+    @GetMapping("/forgetPassword/sendCode/{userEmail}")
+    public String sendCode(@PathVariable("userEmail") String userEmail) {
+        if(!accountService.checkEmailIsEmpty(userEmail)){
+            accountService.sendCodeForResetPassword(userEmail);
+            return "已發送驗證碼至信箱";
+        }
+        return "信箱有誤";
+    }
 
+    @GetMapping("/forgetPassword/verifyCode/{verifyCode}/{email}")
+    public String verifyCode(@PathVariable("verifyCode") String verifyCode, @PathVariable("email") String email) {
+        boolean isValid = accountService.verifyCodeForResetPassword(email, verifyCode);
+        if (isValid) {
+            // 驗證碼正確，導向重設密碼頁面
+            return "resetPassword";
+        } else {
+            // 驗證碼錯誤
+            return "verify-code-forgetPassword";
+        }
+    }
 
 
 

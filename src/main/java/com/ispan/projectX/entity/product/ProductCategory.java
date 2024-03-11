@@ -28,7 +28,7 @@ public class ProductCategory {
             fetch = FetchType.LAZY ,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
-    List<Product>products;
+    private List<Product>products;
 
     ////////////////////////////////////
     public ProductCategory() {

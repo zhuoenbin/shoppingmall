@@ -3,6 +3,7 @@ package com.ispan.projectX.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import com.ispan.projectX.entity.order.OrderTable;
 import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -74,9 +75,13 @@ public class Seller {
     private List<OrderTable> orderTables;
 
 
+
+    @OneToMany(mappedBy = "seller",
+            fetch = FetchType.LAZY ,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    List<Product> products;
+                        CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "productId")
+    private List<Product> products;
 
 
     public Seller() {
@@ -115,11 +120,11 @@ public class Seller {
         this.user = user;
     }
 
-    public Integer getSellerName() {
+    public String getSellerName() {
         return sellerName;
     }
 
-    public void setSellerName(Integer sellerName) {
+    public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
     }
 
