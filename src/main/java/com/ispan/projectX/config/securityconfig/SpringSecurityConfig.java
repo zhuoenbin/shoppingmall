@@ -68,12 +68,11 @@ public class SpringSecurityConfig {
                 )
 
                 .csrf(csrf -> csrf.disable())
-//
-//                .cors(cors -> cors
-//                        .configurationSource(createCoreConfig())
-//                )
 
-
+                //同源設定，createCoreConfig()寫在下面
+                .cors(cors -> cors
+                        .configurationSource(createCoreConfig())
+                )
 
                 .build();
 

@@ -31,7 +31,7 @@ public class OrderTable {
     private Seller seller;
 
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private Date orderDate;
 
     @Column(name = "total_price")
     private Integer totalPrice;
@@ -103,7 +103,7 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Users user, Seller seller, LocalDateTime orderDate, Integer totalPrice, Integer sellerDiscountPrice, Integer sellerCouponPrice, Integer officialDiscountPrice, Integer officialCouponPrice, String discountDescription, String couponDescription, Integer paymentMethod, Integer paymentStatus, Date sellerConfirmDate, Date sellerShipDate, Date logisticsShipDate, Date logisticsArrivalDate, Date buyerReceiveDate, Date buyerConfirmDate, Date orderCancelDate, String shippingCompanyName, String city, String district, String address, Integer freight) {
+    public OrderTable(Users user, Seller seller, Date orderDate, Integer totalPrice, Integer sellerDiscountPrice, Integer sellerCouponPrice, Integer officialDiscountPrice, Integer officialCouponPrice, String discountDescription, String couponDescription, Integer paymentMethod, Integer paymentStatus, Date sellerConfirmDate, Date sellerShipDate, Date logisticsShipDate, Date logisticsArrivalDate, Date buyerReceiveDate, Date buyerConfirmDate, Date orderCancelDate, String shippingCompanyName, String city, String district, String address, Integer freight) {
         this.user = user;
         this.seller = seller;
         this.orderDate = orderDate;
@@ -171,11 +171,11 @@ public class OrderTable {
         this.seller = seller;
     }
 
-    public LocalDateTime getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 

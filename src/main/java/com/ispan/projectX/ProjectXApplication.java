@@ -16,6 +16,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -27,13 +28,15 @@ public class ProjectXApplication {
     }
 
 
-//	@Bean
-//	public CommandLineRunner commandLineRunner(ComplaintRepository complaintRepository,
-//											   EmployeeRepository employeeRepository,
-//											   UsersRepository usersRepository,
-//											   SellerRepository sellerRepository,
-//											   PushReceiverGroupRepository pushReceiverGroupRepository) {
-//		return runner -> {
+	@Bean
+	public CommandLineRunner commandLineRunner(OrderTableRepository orderTableRepository,
+											   EmployeeRepository employeeRepository,
+											   UsersRepository usersRepository,
+											   SellerRepository sellerRepository,
+                                               OrderDetailRepository orderDetailRepository,
+                                               ProductRepository productRepository
+											   ) {
+		return runner -> {
 //			Seller sel = sellerRepository.findBySellerId(2);
 //
 //			PushReceiverGroup group2 = new PushReceiverGroup();
@@ -45,13 +48,13 @@ public class ProjectXApplication {
 //			pushReceiverGroupRepository.save(group2);
 
     //訂單產生器
-//			generateOrderDetailWithProduct(orderDetailRepository,
-//					productRepository,
-//					usersRepository,
-//					sellerRepository,
-//					orderTableRepository);
-//		};
-//	}
+			generateOrderDetailWithProduct(orderDetailRepository,
+					productRepository,
+					usersRepository,
+					sellerRepository,
+					orderTableRepository);
+		};
+	}
 
 
     private void generateOrderDetailWithProduct(OrderDetailRepository orderDetailRepository,
@@ -61,54 +64,54 @@ public class ProjectXApplication {
                                                 OrderTableRepository orderTableRepository) {
         Product or1 = productRepository.findByProductId(1);
         Product or2 = productRepository.findByProductId(2);
-    }
-//		Users user = usersRepository.findByUserId(1);
-//		Seller seller = sellerRepository.findBySellerId(2);
-//
-//		OrderTable order1 = new OrderTable(
-//				null,           // 使用者
-//				null,         // 賣家
-//				LocalDateTime.now(),  // 訂單日期
-//				1500,            // 總價格
-//				100,             // 賣家折扣價格
-//				50,              // 賣家優惠券價格
-//				80,              // 官方折扣價格
-//				30,              // 官方優惠券價格
-//				"特價活動",      // 折扣描述
-//				"特價券",        // 優惠券描述
-//				1,               // 付款方式
-//				1,               // 付款狀態
-//				null,            // 賣家確認日期
-//				null,            // 賣家發貨日期
-//				null,            // 物流發貨日期
-//				null,            // 物流抵達日期
-//				null,            // 買家收貨日期
-//				null,            // 買家確認日期
-//				null,            // 訂單取消日期
-//				"宅配速達",      // 運送公司名稱
-//				"台北市",        // 城市
-//				"信義區",        // 行政區
-//				"忠孝東路一段100號", // 住址
-//				80               // 運費
-//		);
-//		OrderTable order = orderTableRepository.save(order1);
-//
-//		order.setSeller(seller);
-//		order.setUser(user);
-//		orderTableRepository.save(order);
-//
-//		OrderDetail od1 = orderDetailRepository.save(new OrderDetail(null, null, 2, 100, 0));
-//		OrderDetail od2 = orderDetailRepository.save(new OrderDetail(null, null, 1, 50, 5));
-//
-//		od1.setProduct(or1);
-//		od1.setOrder(order);
-//		od2.setProduct(or2);
-//		od2.setOrder(order);
-//
-//		orderDetailRepository.save(od1);
-//		orderDetailRepository.save(od2);
-//
-//	}
+
+		Users user = usersRepository.findByUserId(1);
+		Seller seller = sellerRepository.findBySellerId(2);
+
+		OrderTable order1 = new OrderTable(
+				null,           // 使用者
+				null,         // 賣家
+				new Date(),  // 訂單日期
+				1500,            // 總價格
+				100,             // 賣家折扣價格
+				50,              // 賣家優惠券價格
+				80,              // 官方折扣價格
+				30,              // 官方優惠券價格
+				"特價活動",      // 折扣描述
+				"特價券",        // 優惠券描述
+				1,               // 付款方式
+				1,               // 付款狀態
+				null,            // 賣家確認日期
+				null,            // 賣家發貨日期
+				null,            // 物流發貨日期
+				null,            // 物流抵達日期
+				null,            // 買家收貨日期
+				null,            // 買家確認日期
+				null,            // 訂單取消日期
+				"宅配速達",      // 運送公司名稱
+				"台北市",        // 城市
+				"信義區",        // 行政區
+				"忠孝東路一段100號", // 住址
+				80               // 運費
+		);
+		OrderTable order = orderTableRepository.save(order1);
+
+		order.setSeller(seller);
+		order.setUser(user);
+		orderTableRepository.save(order);
+
+		OrderDetail od1 = orderDetailRepository.save(new OrderDetail(null, null, 2, 100, 0));
+		OrderDetail od2 = orderDetailRepository.save(new OrderDetail(null, null, 1, 50, 5));
+
+		od1.setProduct(or1);
+		od1.setOrder(order);
+		od2.setProduct(or2);
+		od2.setOrder(order);
+
+		orderDetailRepository.save(od1);
+		orderDetailRepository.save(od2);
+
+	}
 
 
 //	};
