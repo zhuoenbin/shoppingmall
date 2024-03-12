@@ -95,6 +95,11 @@ public class Product {
         }
     }
 
+    @PreUpdate
+    public void onUpdate(){
+        modifiedDate = new Date();
+    }
+
     /////////////////////////////////////////
 
     @OneToMany(mappedBy = "product",

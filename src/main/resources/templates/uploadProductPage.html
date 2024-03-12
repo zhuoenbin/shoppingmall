@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>商品上傳</title>
+</head>
+<body>
+<!--<div th:replace="~{layout/navbar}"></div>-->
+<div class="container">
+  <h1>商品上傳</h1>
+  
+  <form th:action="@{/product/insertWithImg}" method="post" enctype="multipart/form-data">
+    <label for="productName"><b>productName : </b></label>
+    <input type="text" id="productName" placeholder="Enter Product Name" name="productName" required>
+    <br>
+    <label for="sellerId"><b>sellerId : </b></label>
+    <input type="text" id="sellerId" placeholder="Enter sellerId" name="sellerId" required>
+    <br>
+    <label for="unitPrice"><b>unitPrice : </b></label>
+    <input type="text" id="unitPrice" placeholder="Enter unitPrice" name="unitPrice" required>
+    <br>
+    <label for="categoryId"><b>categoryId : </b></label>
+    <input type="text" id="categoryId" placeholder="Enter categoryId" name="categoryId" required>
+    <br>
+    <label for="stock"><b>stock : </b></label>
+    <input type="text" id="stock" placeholder="Enter stock" name="stock" required>
+    <br>
+    <label for="reservedQuantity"><b>reservedQuantity : </b></label>
+    <input type="text" id="reservedQuantity" placeholder="Enter reservedQuantity" name="reservedQuantity" required>
+    <br>
+    <label for="description"><b>description : </b></label>
+    <input type="text" id="description" placeholder="Enter description" name="description" required>
+    <br>
+    <label for="imgDescription"><b>imgDescription : </b></label>
+    <input type="text" id="imgDescription" placeholder="Enter imgDescription" name="imgDescription" required>
+     <br>
+    <label for="productImg"><b>照片選擇:</b></label>
+    <input type="file" id="productImg" name="productImg" required multiple>
+    
+    <br>
+    <button type="submit">上傳</button>
+  
+  </form>
+  
+  <br>
+<!--  <div th:text="${okMsg} ? ${okMsg}"></div>-->
+<!--  <div th:text="${errorMsg} ? ${okMsg}"></div>-->
+<!--  <div th:text="${sizeError} ? ${sizeError}"></div>-->
+  
+  
+</div>
+</body>
+</html>

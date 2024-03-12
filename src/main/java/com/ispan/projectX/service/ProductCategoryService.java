@@ -13,7 +13,13 @@ public class ProductCategoryService {
     @Autowired
     private ProductCategoryRepository categoryRepository;
 
-    public ProductCategory insertCategory(ProductCategory category){
+    public ProductCategory createCategory(String categoryName){
+        ProductCategory category = new ProductCategory();
+        category.setCategoryName(categoryName);
+        return categoryRepository.save(category);
+    }
+
+    public ProductCategory updateCategory(ProductCategory category){
         return categoryRepository.save(category);
     }
 

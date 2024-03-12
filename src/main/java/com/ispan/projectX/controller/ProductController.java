@@ -1,6 +1,8 @@
 package com.ispan.projectX.controller;
 
 import com.ispan.projectX.dao.SellerRepository;
+import com.ispan.projectX.dto.product.CreateProductDto;
+import com.ispan.projectX.dto.product.UpdateProductDto;
 import com.ispan.projectX.entity.Seller;
 import com.ispan.projectX.entity.product.Product;
 import com.ispan.projectX.entity.product.ProductCategory;
@@ -9,14 +11,15 @@ import com.ispan.projectX.service.ProductCategoryService;
 import com.ispan.projectX.service.ProductGalleryCloudService;
 import com.ispan.projectX.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+//@RestController
+@Controller
 public class ProductController {
     @Autowired //暫時引用
     private SellerRepository sellerRepository;
@@ -41,15 +44,13 @@ public class ProductController {
     //新增類別
     @PostMapping("/category/create")
     public  ProductCategory insertNewCategory(@RequestParam String categoryName){
-        ProductCategory category = new ProductCategory();
-        category.setCategoryName(categoryName);
-        return productCategoryService.insertCategory(category);
+        return productCategoryService.createCategory(categoryName);
     }
 
     //更新類別
     @PutMapping("/category/update")
     public ProductCategory updateCategory(@RequestBody ProductCategory category){
-        return productCategoryService.insertCategory(category);
+        return productCategoryService.updateCategory(category);
     }
 
     //-----------------Product & Cloudinary-----------------
@@ -121,71 +122,57 @@ public class ProductController {
 
     //新增商品
     @PostMapping("/product/insert")
-    public Product createProduct (@RequestBody Product product,
-                                  @RequestParam Integer sellerId,
-                                  @RequestParam Integer categoryId){
-
-        Seller seller = sellerRepository.findBySellerId(sellerId);
-        ProductCategory category = productCategoryService.findByCategoryId(categoryId);
-
-        product.setSeller(seller);
-        product.setCategory(category);
-
-        return productService.insertProduct(product);
+    public Product createProduct (@RequestBody CreateProductDto createProductDto){
+        return productService.createProduct(createProductDto);
     }
 
     //更新商品(賣家更新商品名,單價,庫存,商品敘述)
     @PutMapping("/product/update")
-    public Product updateProduct (@RequestParam Integer productId,
-                                  @RequestParam String productName,
-                                  @RequestParam Integer unitPrice,
-                                  @RequestParam Integer stock,
-                                  @RequestParam String description){
-
-        Product productInDb = productService.findByProductId(productId);
-        productInDb.setProductName(productName);
-        productInDb.setUnitPrice(unitPrice);
-        productInDb.setStock(stock);
-        productInDb.setDescription(description);
-        productInDb.setModifiedDate(new Date());
-
-        return productService.insertProduct(productInDb);
+    public Product updateProduct (@RequestBody UpdateProductDto updateProductDto){
+        return productService.updateProduct(updateProductDto);
     }
 
-    //插入商品圖片
+    //插入商品圖片(可多張)
     @PostMapping("/product/image/insert")
-    public ProductGalleryCloud insertProductImg(@RequestParam("productImg")MultipartFile file,
-                                                @RequestParam Integer productId,
-                                                @RequestParam String imgDescription){
-        Product product = productService.findByProductId(productId);
-
-        return productGalleryCloudService.productUploadCloud(file, product, imgDescription);
+    public List<ProductGalleryCloud> insertProductImg(@RequestParam("productImg")MultipartFile[] images,
+                                                @RequestParam Integer productId, @RequestParam String imgDescription){
+        List<ProductGalleryCloud> uploadedImages = new ArrayList<>();
+        for(MultipartFile image:images){
+            ProductGalleryCloud cloud = productGalleryCloudService.productUploadCloud(image, productId, imgDescription);
+            uploadedImages.add(cloud);
+        }
+        return uploadedImages;
     }
 
-    //更新商品圖片與敘述
+    //更新商品圖片與敘述(單張)
     @PutMapping("/product/image/update")
     public ProductGalleryCloud updateProductImg(@RequestParam("productImg")MultipartFile file,
                                                 @RequestParam Integer productId,
                                                 @RequestParam Integer imgId,
                                                 @RequestParam String imgDescription) {
-        Product product = productService.findByProductId(productId);
         ProductGalleryCloud cloud = productGalleryCloudService.findByImgId(imgId);
 
-        return productGalleryCloudService.updateImgCloud(file,product,cloud,imgDescription);
+        return productGalleryCloudService.updateImgCloud(file,productId,cloud,imgDescription);
     }
 
-    //同時新增商品及上傳圖片
+    @GetMapping("/product/insertWithImg")
+    public String uploadPhoto() {
+        return "uploadProductPage";
+    }
+
+    //同時新增商品及上傳圖片 uploadProductPage.html
+
     @PostMapping("/product/insertWithImg")
-    public Product createProductWithCloudImg (@RequestParam String productName,
+    public String createProductWithCloudImg (@RequestParam String productName,
                                               @RequestParam Integer sellerId,
                                               @RequestParam Integer unitPrice,
                                               @RequestParam Integer categoryId,
                                               @RequestParam Integer stock,
                                               @RequestParam Integer reservedQuantity,
                                               @RequestParam String description,
-                                              @RequestParam("productImg")MultipartFile file,
+                                              @RequestParam MultipartFile[] productImg,
                                               @RequestParam String imgDescription
-                                              ){
+    ){
 
         Seller seller = sellerRepository.findBySellerId(sellerId);
         ProductCategory category = productCategoryService.findByCategoryId(categoryId);
@@ -199,13 +186,32 @@ public class ProductController {
         product.setStock(stock);
         product.setReservedQuantity(reservedQuantity);
         product.setDescription(description);
-        Product inserted = productService.insertProduct(product);//創建後的商品物件
+        Product inserted = productService.createProduct(product);//創建後的商品物件
+        Integer insertedProductId = inserted.getProductId();
 
-        productGalleryCloudService.productUploadCloud(file, inserted, imgDescription);//將圖片插入創建好的商品
+        List<ProductGalleryCloud> uploadedImages = new ArrayList<>();
+        for(MultipartFile image:productImg){
+            ProductGalleryCloud cloud = productGalleryCloudService.productUploadCloud(image, insertedProductId, imgDescription);
+            uploadedImages.add(cloud);
+        }
 
-        return productService.findByProductId(inserted.getProductId());
+        return "uploadProductPage";
     }
-
+//    public Product createProductWithCloudImg (@RequestBody CreateProductDto createProductDto,
+//                                              @RequestPart("productImg")MultipartFile[] images,
+//                                              @RequestPart String imgDescription){
+//
+//        Product inserted = productService.createProduct(createProductDto);//創建後的商品物件
+//        Integer insertedProductId = inserted.getProductId();
+//
+//        //將圖片插入創建好的商品
+//        List<ProductGalleryCloud> uploadedImages = new ArrayList<>();
+//        for(MultipartFile image:images){
+//            ProductGalleryCloud cloud = productGalleryCloudService.productUploadCloud(image, insertedProductId, imgDescription);
+//            uploadedImages.add(cloud);
+//        }
+//        return productService.findByProductId(insertedProductId);
+//    }
 
 
 
