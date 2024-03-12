@@ -147,7 +147,7 @@ public class LogRestController {
 
 
     //登出功能，清除cookie與session
-    @PostMapping("/clearSessionAndCookies")
+    @GetMapping("/clearSessionAndCookies")
     public ResponseEntity<String> clearSessionAndCookies(HttpServletRequest request, HttpServletResponse response, SessionStatus sessionStatus) {
         // 清除 Session
         sessionStatus.setComplete();
