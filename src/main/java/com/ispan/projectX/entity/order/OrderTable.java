@@ -365,7 +365,7 @@ public class OrderTable {
     public String toString() {
         final StringBuffer sb = new StringBuffer("OrderTable{");
         sb.append("orderId=").append(orderId);
-        sb.append(", buyer=").append(buyer);
+        sb.append(", buyer=").append(user);
         sb.append(", seller=").append(seller);
         sb.append(", orderDate=").append(orderDate);
         sb.append(", totalPrice=").append(totalPrice);
