@@ -1,8 +1,7 @@
 package com.ispan.projectX.controller;
 
 import com.ispan.projectX.entity.Users;
-import com.ispan.projectX.service.CreditCardService;
-import com.ispan.projectX.service.UserService;
+import com.ispan.projectX.service.UserCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,10 +18,7 @@ import java.util.Date;
 public class UserCenterController {
 
     @Autowired
-    private UserService uService;
-
-    @Autowired
-    private CreditCardService cardService;
+    private UserCenterService userCenterService;
 
     @GetMapping("/usercenter/userProfile")
     public String goUserProfile(Model model,HttpSession hsession) {
@@ -43,7 +39,7 @@ public class UserCenterController {
     public String goUserPayment(Model model,HttpSession hsession) {
         Integer userId = (Integer)hsession.getAttribute("userId");
 
-        cardService.showCreditCard(userId);
+        userCenterService.showCreditCard(model,userId);
 
         return "usercenter/userPaymentPage";
     }
@@ -63,7 +59,7 @@ public class UserCenterController {
         user.setUserGender(uGender);
         user.setBirthDate(uBirthDay);
 
-        uService.editProfile(user);
+        userCenterService.editProfile(user);
 
         return "usercenter/userProfilePage";
     }
