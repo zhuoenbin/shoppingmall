@@ -21,7 +21,7 @@ public class UserCenterController {
     private UserCenterService userCenterService;
 
     @GetMapping("/usercenter/userProfile")
-    public String goUserProfile(Model model,HttpSession hsession) {
+    public String goUserProfile(Model model) {
 //
 
         Users user = new Users();
