@@ -1,11 +1,13 @@
 package com.ispan.projectX.entity.order;
 
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ispan.projectX.entity.product.Product;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "order_detail")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderDetailId")
 public class OrderDetail {
 
     @Id
@@ -13,12 +15,14 @@ public class OrderDetail {
     @Column(name = "order_detail_id")
     private Integer orderDetailId;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private OrderTable order;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     private Product product;
 
     @Column(name = "quantity")
@@ -30,16 +34,19 @@ public class OrderDetail {
     @Column(name = "discount")
     private Integer discount;
 
+    /////////////////////////
     public OrderDetail() {
     }
 
-    public OrderDetail(OrderTable order, Product product, Integer quantity, Integer price, Integer discount) {
+    public OrderDetail(Integer orderDetailId, OrderTable order, Product product, Integer quantity, Integer price, Integer discount) {
+        this.orderDetailId = orderDetailId;
         this.order = order;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
         this.discount = discount;
     }
+/////////////////////////
 
     public Integer getOrderDetailId() {
         return orderDetailId;
@@ -88,7 +95,6 @@ public class OrderDetail {
     public void setDiscount(Integer discount) {
         this.discount = discount;
     }
-
 
     @Override
     public String toString() {
