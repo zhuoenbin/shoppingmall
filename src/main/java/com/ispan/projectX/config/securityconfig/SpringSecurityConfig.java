@@ -6,10 +6,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -38,7 +41,7 @@ public class SpringSecurityConfig {
 
                 .authorizeHttpRequests(request -> request
 
-                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**","/forgetPassword/**").permitAll()
+                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**","/forgetPassword/**","/clearSessionAndCookies").permitAll()
 
 
 //                        .requestMatchers("/oauthLogin","/logoutPage").authenticated()
@@ -67,7 +70,20 @@ public class SpringSecurityConfig {
                         .accessDeniedPage("/access-denied")
                 )
 
+
+                //設定session創建機制
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+
+
                 .csrf(csrf -> csrf.disable())
+                //設定csrf保護，要開啟的話，必須連sessionManagement也開啟，並且在requestHeader必須帶XSRF-TOKEN的值
+                //requestHeader的key必須是:X-XSRF-TOKEN，value為cookie中XSRF-TOKEN的value
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                        .csrfTokenRequestHandler(createCsrfHandler())
+//                        .ignoringRequestMatchers("/register","/userLogin")
+//                )
 
                 //同源設定，createCoreConfig()寫在下面
                 .cors(cors -> cors
@@ -129,8 +145,11 @@ public class SpringSecurityConfig {
         source.registerCorsConfiguration("/**",config);
 
         return source;
+    }
 
-
-
+    private CsrfTokenRequestAttributeHandler createCsrfHandler(){
+        CsrfTokenRequestAttributeHandler csrf = new CsrfTokenRequestAttributeHandler();
+        csrf.setCsrfRequestAttributeName(null);
+        return csrf;
     }
 }

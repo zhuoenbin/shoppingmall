@@ -48,11 +48,11 @@ public class ProjectXApplication {
 //			pushReceiverGroupRepository.save(group2);
 
     //訂單產生器
-			generateOrderDetailWithProduct(orderDetailRepository,
-					productRepository,
-					usersRepository,
-					sellerRepository,
-					orderTableRepository);
+//			generateOrderDetailWithProduct(orderDetailRepository,
+//					productRepository,
+//					usersRepository,
+//					sellerRepository,
+//					orderTableRepository);
 		};
 	}
 

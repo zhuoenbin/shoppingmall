@@ -19,4 +19,8 @@ public interface AccountService {
     public void sendCodeForResetPassword(String email);
 
     public boolean verifyCodeForResetPassword(String email, String code);
+
+    public void resetPassword(String email, String newPassword);
+
+    public void clearVerificationCode(String email);
 }

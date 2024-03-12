@@ -136,4 +136,16 @@ public class AccountServiceImpl implements AccountService {
         }
         return false;
     }
+
+    @Override
+    public void resetPassword(String email, String newPassword) {
+        Users user = usersRepository.findUsersByUserEmail(email);
+        user.setUserPassword(encodePassword(newPassword));
+        usersRepository.save(user);
+    }
+
+    @Override
+    public void clearVerificationCode(String email) {
+        emailVerificationCodes.remove(email);
+    }
 }

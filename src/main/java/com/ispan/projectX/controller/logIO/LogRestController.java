@@ -5,6 +5,9 @@ import com.ispan.projectX.dao.UsersRepository;
 import com.ispan.projectX.dto.Passport;
 import com.ispan.projectX.entity.Users;
 import com.ispan.projectX.service.interfacefile.AccountService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.*;
 
@@ -33,6 +37,7 @@ public class LogRestController {
     public LogRestController(AccountService accountService) {
         this.accountService = accountService;
     }
+
 
     @PostMapping("/register/formRegister")
     public ResponseEntity<String> registerUser(@ModelAttribute Users user) {
@@ -124,6 +129,40 @@ public class LogRestController {
             // 驗證碼錯誤
             return "verify-code-forgetPassword";
         }
+    }
+
+    @PostMapping("/forgetPassword/resetPassword")
+    public String resetPassword(@RequestBody Map<String, String> requestBody)  {
+        String verifyCode = requestBody.get("verifyCode");
+        String email = requestBody.get("email");
+        String newPassword = requestBody.get("newPassword");
+        boolean isValid = accountService.verifyCodeForResetPassword(email, verifyCode);
+        if (isValid) {
+            accountService.resetPassword(email, newPassword);
+            accountService.clearVerificationCode(email);
+            return "重設密碼成功";
+        }
+        return "驗證碼失效/無效";
+    }
+
+
+    //登出功能，清除cookie與session
+    @PostMapping("/clearSessionAndCookies")
+    public ResponseEntity<String> clearSessionAndCookies(HttpServletRequest request, HttpServletResponse response, SessionStatus sessionStatus) {
+        // 清除 Session
+        sessionStatus.setComplete();
+        // 清除 Cookies
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0);
+                cookie.setValue("");
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+        }
+
+        return ResponseEntity.ok("所有 Cookies 和 Session 已被清除。");
     }
 
 
