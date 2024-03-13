@@ -41,6 +41,22 @@ public class ShoppingCart {
     @Column(name = "updated_time")
     private Date updatedTime;
 
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public Integer getShoppingCartId() {
         return shoppingCartId;
     }

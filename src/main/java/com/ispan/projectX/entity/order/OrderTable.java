@@ -130,7 +130,8 @@ public class OrderTable {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<OrderDetail> orderDetails;
 
-    /////////////////////////////
+
+    ////////////////////////////
     public OrderTable() {
     }
 
