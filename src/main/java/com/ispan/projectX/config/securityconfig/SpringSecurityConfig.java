@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
 
                 .authorizeHttpRequests(request -> request
 
-                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**","/forgetPassword/**","/clearSessionAndCookies").permitAll()
+                        .requestMatchers("/loginPage","/mainPage","/registerPage","/register/**","/forgetPassword/**","/clearSessionAndCookies","/test").permitAll()
 
 
 //                        .requestMatchers("/oauthLogin","/logoutPage").authenticated()
@@ -82,7 +82,7 @@ public class SpringSecurityConfig {
 //                .csrf(csrf -> csrf
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                        .csrfTokenRequestHandler(createCsrfHandler())
-//                        .ignoringRequestMatchers("/register","/userLogin")
+//                        .ignoringRequestMatchers("/register","/userLogin","/authenticateTheUser")
 //                )
 
                 //同源設定，createCoreConfig()寫在下面
@@ -135,10 +135,10 @@ public class SpringSecurityConfig {
     //csrf設定
     private CorsConfigurationSource createCoreConfig(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("*"));
-        //config.setAllowCredentials(true);
+        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

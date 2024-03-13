@@ -17,4 +17,9 @@ public class testController {
         return orderTableRepository.findByOrderId(orderId).toString();
     }
 
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
+
 }
