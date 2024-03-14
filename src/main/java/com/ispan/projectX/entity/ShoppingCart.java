@@ -24,7 +24,6 @@ import java.util.Date;
     @JoinColumn(name="product_id")
     private Product product;
 
-
     @Column(name = "quantity")
     private Integer quantity;
 
@@ -54,7 +53,7 @@ import java.util.Date;
         this.updatedTime = updatedTime;
     }
 
-        public Integer getShoppingCartId() {
+    public Integer getShoppingCartId() {
         return shoppingCartId;
     }
 
@@ -98,8 +97,8 @@ import java.util.Date;
         public String toString() {
             final StringBuffer sb = new StringBuffer("ShoppingCart{");
             sb.append("shoppingCartId=").append(shoppingCartId);
-            sb.append(", users=").append(users != null ? users.getUserId() : null);
-            sb.append(", product=").append(product != null ? product.getProductId() : null);
+            sb.append(", users=").append(users);
+            sb.append(", product=").append(product);
             sb.append(", quantity=").append(quantity);
             sb.append(", unitPrice=").append(unitPrice);
             sb.append(", createdTime=").append(createdTime);
@@ -107,7 +106,6 @@ import java.util.Date;
             sb.append('}');
             return sb.toString();
         }
-
 
         public Users getUsers() {
         return users;

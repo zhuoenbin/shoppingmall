@@ -19,11 +19,9 @@ public class Product {
     @Column(name="product_name", nullable = false)
     private String productName;
 
-    @Column(name="seller_id")
-    private Integer sellerId;
-
-    @Column(name="employee_id")
-    private Integer employeeId;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name="employee_id")
+    private Employee employeeId;
 
     @Column(name="unit_price")
     private Integer unitPrice;
@@ -72,10 +70,9 @@ public class Product {
     public Product() {
     }
 
-    public Product(Integer productId, String productName, Integer sellerId, Integer employeeId, Integer unitPrice, Integer categoryId, Integer stock, Integer reservedQuantity, Date listingDate, Date modifiedDate, String description, String productStatus, String productStatusDes, Integer promotionId, Integer officialActivityDiscount, Integer sellerActivityDiscount, Seller seller) {
+    public Product(Integer productId, String productName, Employee employeeId, Integer unitPrice, Integer categoryId, Integer stock, Integer reservedQuantity, Date listingDate, Date modifiedDate, String description, String productStatus, String productStatusDes, Integer promotionId, Integer officialActivityDiscount, Integer sellerActivityDiscount, Seller seller) {
         this.productId = productId;
         this.productName = productName;
-        this.sellerId = sellerId;
         this.employeeId = employeeId;
         this.unitPrice = unitPrice;
         this.categoryId = categoryId;
@@ -108,19 +105,11 @@ public class Product {
         this.productName = productName;
     }
 
-    public Integer getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Integer sellerId) {
-        this.sellerId = sellerId;
-    }
-
-    public Integer getEmployeeId() {
+    public Employee getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(Integer employeeId) {
+    public void setEmployeeId(Employee employeeId) {
         this.employeeId = employeeId;
     }
 
@@ -233,7 +222,6 @@ public class Product {
         final StringBuffer sb = new StringBuffer("Product{");
         sb.append("productId=").append(productId);
         sb.append(", productName='").append(productName).append('\'');
-        sb.append(", sellerId=").append(sellerId);
         sb.append(", employeeId=").append(employeeId);
         sb.append(", unitPrice=").append(unitPrice);
         sb.append(", categoryId=").append(categoryId);

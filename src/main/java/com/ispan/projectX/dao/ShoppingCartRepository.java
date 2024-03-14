@@ -22,4 +22,8 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart,Integ
     @Query("SELECT sc FROM ShoppingCart sc WHERE sc.shoppingCartId = :shoppingCartId")
     ShoppingCart findByShoppingCartId(@Param("shoppingCartId") Integer shoppingCartId);
 
+    @Query("SELECT sc FROM ShoppingCart sc WHERE sc.product = :product")
+    ShoppingCart findByProduct(@Param("product") Product productId);
+
+
 }

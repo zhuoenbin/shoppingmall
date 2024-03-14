@@ -12,78 +12,121 @@
     <div class="container" style="padding: 20px">
         <div style="position: relative;">
             <h1>購物車</h1>
-            <a class="btn btn-primary" style="position: absolute; right: 20px; top: 50%"> 送出訂單 </a>
+            <a id="submitOrderBtn" class="btn btn-primary" style="position: absolute; right: 20px; top: 50%"> 送出訂單 </a>
         </div>
 
         <br>
 
-        <th:block th:each=" shoppingCart : ${page.content}">
+<!--        <th:block th:each=" shoppingCart : ${page.content}">-->
 
+<!--            <div class="card" style="position: relative;">-->
+<!--                <div class="card-header" style="padding: 5px">-->
+<!--                    商品名  <span th:text="${shoppingCart.product.productName}"></span>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                        User <span th:text="${shoppingCart.users.lastName}"></span>-->
+<!--                        <br>-->
+<!--                        UserId <span th:text="${shoppingCart.users.userId}"></span>-->
+<!--                        <br>-->
+<!--                        商品數量  <span th:text="${shoppingCart.quantity}"></span>-->
+<!--                        <br>-->
+<!--                        商品庫存  <span class="color: #eee" th:text="${shoppingCart.product.stock}"></span>-->
+<!--                        <br>-->
+<!--                        金額  $<span th:text="${shoppingCart.unitPrice}"></span>-->
+<!--                        <br>-->
+<!--                        總金額  $<span th:text="${shoppingCart.unitPrice * shoppingCart.quantity}"></span>-->
+
+<!--                        <div style="position: absolute; right: 40px; top: 50%">-->
+<!--                            <a class="btn btn-primary" th:href="@{/shoppingCart/update(shoppingCartId=${shoppingCart.shoppingCartId}, quantity=${shoppingCart.quantity - 1})}"> - </a>-->
+<!--                            <span th:text="${shoppingCart.quantity}"></span>-->
+<!--                            <a class="btn btn-primary" th:href="@{/shoppingCart/update(shoppingCartId=${shoppingCart.shoppingCartId}, quantity=${shoppingCart.quantity + 1})}"> + </a>-->
+<!--                        </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <br>-->
+<!--        </th:block>-->
+
+        <th:block th:each="shoppingCart : ${page}">
+            Seller Id [[${shoppingCart.product.seller.sellerId}]]
             <div class="card" style="position: relative;">
                 <div class="card-header" style="padding: 5px">
+                    <!-- 在這裡加入 checkbox -->
+                    <input type="checkbox" th:id="'checkbox_' + ${shoppingCart.product.productId}" th:name="${shoppingCart.product.productId}" th:value="${shoppingCart.product.productId}">
+                    商品Id  <span th:text="${shoppingCart.product.productId}"></span>
                     商品名  <span th:text="${shoppingCart.product.productName}"></span>
                 </div>
                 <div class="card-body">
-                        User <span th:text="${shoppingCart.users.lastName}"></span>
-                        <br>
-                        UserId <span th:text="${shoppingCart.users.userId}"></span>
-                        <br>
-                        商品數量  <span th:text="${shoppingCart.quantity}"></span>
-                        <br>
-                        金額  $<span th:text="${shoppingCart.unitPrice}"></span>
-                        <br>
-                        總金額  $<span th:text="${shoppingCart.unitPrice * shoppingCart.quantity}"></span>
+                    User <span th:text="${shoppingCart.users.lastName}"></span>
+                    <br>
+                    UserId <span th:text="${shoppingCart.users.userId}"></span>
+                    <br>
+                    商品數量  <span th:text="${shoppingCart.quantity}"></span>
+                    <br>
+                    商品庫存  <span th:text="${shoppingCart.product.stock}"></span>
+                    <br>
+                    金額  $<span th:text="${shoppingCart.unitPrice}"></span>
+                    <br>
+                    總金額  $<span th:text="${shoppingCart.unitPrice * shoppingCart.quantity}"></span>
 
-                        <div style="position: absolute; right: 40px; top: 50%">
-                            <a class="btn btn-primary" th:href="@{/shoppingCart/update(shoppingCartId=${shoppingCart.shoppingCartId}, quantity=${shoppingCart.quantity - 1})}"> - </a>
-                            <span th:text="${shoppingCart.quantity}"></span>
-                            <a class="btn btn-primary" th:href="@{/shoppingCart/update(shoppingCartId=${shoppingCart.shoppingCartId}, quantity=${shoppingCart.quantity + 1})}"> + </a>
-                        </div>
-
-<!--                    賣家 <span th:text="${shoppingCart.seller.sellerName}"></span>-->
-<!--                    <br>-->
-<!--                    商品上架時間 <span th:text="${#dates.format(product.listingDate, 'yyyy年MM月dd日 HH:mm:ss')}"></span>-->
+                    <div style="position: absolute; right: 40px; top: 50%">
+                        <a class="btn btn-primary" th:href="@{/shoppingCart/update(shoppingCartId=${shoppingCart.shoppingCartId}, quantity=${shoppingCart.quantity - 1})}"> - </a>
+                        <span th:text="${shoppingCart.quantity}"></span>
+                        <a class="btn btn-primary" th:href="@{/shoppingCart/update(shoppingCartId=${shoppingCart.shoppingCartId}, quantity=${shoppingCart.quantity + 1})}"> + </a>
+                    </div>
                 </div>
             </div>
-
             <br>
         </th:block>
-
-
-        <ul class="pagination" th:if="${page.totalElements != 0}">
-
-            <th:block th:switch="${page.number != 0}">
-                <li class="page-item" th:case="${true}">
-                    <a class="page-link" th:href="@{/shoppingCart/show?(p=${page.number})}">Previous</a>
-                </li>
-                <li class="page-item" th:case="${false}">
-                    <a class="page-link">Previous</a>
-                </li>
-            </th:block>
-
-            <!-- 頁數 -->
-            <th:block th:each=" pageNumber : ${#numbers.sequence(1, page.totalPages) }">
-                <th:block th:switch="${page.number+1 != pageNumber}">
-                    <li class="page-item" th:case="${true}">
-                        <a class="page-link" th:href="@{/shoppingCart/show?(p=${pageNumber})}">[[${pageNumber}]]</a>
-                    </li>
-                    <li class="page-item active" th:case="${false}">
-                        <span class="page-link" th:text="${pageNumber}"></span>
-                    </li>
-                </th:block>
-            </th:block>
-
-            <th:block th:switch="${page.totalPages != page.number + 1}">
-                <li class="page-item" th:case="${true}">
-                    <a class="page-link" th:href="@{/shoppingCart/show?(p=${page.number + 2})}">Next</a>
-                </li>
-                <li class="page-item" th:case="${false}">
-                    <a class="page-link">Next</a>
-                </li>
-            </th:block>
 
         </ul>
     </div>
 </div>
+
+<script>
+    // 使用Thymeleaf生成的ID來監聽checkbox的變化
+    let checkboxes = document.querySelectorAll('[id^="checkbox_"]');
+
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            // 從checkbox的ID中提取productId
+            let productId = this.id.replace('checkbox_', '');
+
+            if (this.checked) {
+                // checkbox被選中時的處理，可以使用productId
+                console.log('Checkbox is checked for productId: ' + productId);
+                // 可以在這裡更新其他表單元素或執行其他操作
+            } else {
+                // checkbox被取消選中時的處理，可以使用productId
+                console.log('Checkbox is unchecked for productId: ' + productId);
+                // 可以在這裡更新其他表單元素或執行其他操作
+            }
+        });
+    });
+
+    // 監聽送出訂單按鈕的點擊事件
+    document.getElementById('submitOrderBtn').addEventListener('click', function() {
+        // 在這裡獲取所有被選中的checkbox的productId
+        let selectedProductIds = Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        // 使用Ajax將selectedProductIds發送到後端
+        // 這裡使用了簡單的XMLHttpRequest，你也可以考慮使用更現代的方法，如fetch API
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/order/add', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log('Order submitted successfully!');
+            }
+        };
+        xhr.send(JSON.stringify({ productIds: selectedProductIds }));
+    });
+</script>
+
+
+
+
 </body>
 </html>

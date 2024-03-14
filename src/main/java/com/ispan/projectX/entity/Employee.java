@@ -205,4 +205,27 @@ public class Employee {
         sb.append('}');
         return sb.toString();
     }
+
+    @OneToMany(mappedBy = "employeeId",
+            fetch = FetchType.LAZY ,
+            cascade = {CascadeType.ALL})
+    private List<Product> product;
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
+
+    public void addProduct(Product tmpProduct){
+        if(product==null){
+            product = new ArrayList<>();
+        }
+        product.add(tmpProduct);
+
+        tmpProduct.setEmployeeId(this);
+    }
+
 }

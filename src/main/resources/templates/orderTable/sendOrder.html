@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/" style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <title>購物車</title>
+</head>
+<body style="height: 100%;">
+
+<div style="position: relative; height: 100%;">
+
+    <div th:replace="~{layout/navbar}" ></div>
+    <div th:each="sendOrder : ${sendOrder}">
+        <!-- 顯示購物車中的產品信息 -->
+        <p th:text="${sendOrder.shoppingCartId}"></p>
+    </div>
+</div>
+
+</body>
+</html>

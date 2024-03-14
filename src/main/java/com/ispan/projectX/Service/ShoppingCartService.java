@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,12 +36,22 @@ public class ShoppingCartService {
         Product product = pRepository.findByProductId(productId);
 
         try {
+
             ShoppingCart existingCart = scRepository.findByUsersAndProduct(user, product);
+
             // 處理唯一结果
             // 購物車已存在，執行相應的邏輯
-            existingCart.setQuantity(existingCart.getQuantity() + 1);
-            existingCart.setUpdatedTime(new Date());
-            scRepository.save(existingCart);
+
+            if(existingCart.getQuantity() < existingCart.getProduct().getStock()) {
+                existingCart.setQuantity(existingCart.getQuantity() + 1);
+                existingCart.setUpdatedTime(new Date());
+                scRepository.save(existingCart);
+            }else {
+                existingCart.setQuantity(existingCart.getQuantity());
+                scRepository.save(existingCart);
+            }
+
+
         }catch (NonUniqueResultException e) {
             // 處理多個結果的情況
             ShoppingCart shoppingCart = new ShoppingCart(user, product, 1, product.getUnitPrice(), new Date(), new Date());
@@ -56,14 +67,15 @@ public class ShoppingCartService {
 
         ShoppingCart shoppingCart = scRepository.findByShoppingCartId(shoppingCartId);
 
-        if(quantity != 0) {
+        if(quantity > shoppingCart.getProduct().getStock()) {
+            shoppingCart.setQuantity(quantity - 1);
+            scRepository.save(shoppingCart);
+        }else if(quantity != 0) {
             shoppingCart.setQuantity(quantity);
             shoppingCart.setUpdatedTime(new Date());
             scRepository.save(shoppingCart);
         }else {
-
             scRepository.delete(shoppingCart);
-
         }
 
     }
@@ -84,6 +96,23 @@ public class ShoppingCartService {
         Page<ShoppingCart> page = scRepository.findAll(pgb);
 
         return page;
+    }
+
+    public List<ShoppingCart> sendOrder(List<Integer> productIds) {
+        // 遍歷productIds，查找每個商品的購物車項目
+        List<ShoppingCart> shoppingCarts = new ArrayList<>();
+        if (productIds != null && !productIds.isEmpty()) {
+            for (Integer productId : productIds) {
+                Product product = pRepository.findByProductId(productId);
+                ShoppingCart shoppingCart = scRepository.findByProduct(product);
+                // 將查找到的ShoppingCart添加到列表中
+                // 記得改 user
+                shoppingCarts.add(shoppingCart);
+                }
+            }
+
+        return shoppingCarts;
+
     }
 
 

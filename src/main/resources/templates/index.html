@@ -32,6 +32,8 @@
                     <br>
                     商品上架時間 <span th:text="${#dates.format(product.listingDate, 'yyyy年MM月dd日 HH:mm:ss')}"></span>
                     <br>
+                    <!-- User 檢舉 -->
+                    <a class="btn btn-primary" style="position: absolute; right: 40px; color: red;" th:href="@{/user/verify?(productId=${product.productId})}">檢舉</a>
                     <a class="btn btn-primary" style="position: absolute; right: 20px;" th:href="@{/shoppingCart/add?(productId=${product.productId})}">加入購物車</a>
                 </div>
             </span>
@@ -40,39 +42,39 @@
         </th:block>
 
 
-<ul class="pagination" th:if="${page.totalElements != 0}">
+<!--<ul class="pagination" th:if="${page.totalElements != 0}">-->
 
-    <th:block th:switch="${page.number != 0}">
-        <li class="page-item" th:case="${true}">
-            <a class="page-link" th:href="@{/?(p=${page.number})}">Previous</a>
-        </li>
-        <li class="page-item" th:case="${false}">
-            <a class="page-link">Previous</a>
-        </li>
-    </th:block>
+<!--    <th:block th:switch="${page.number != 0}">-->
+<!--        <li class="page-item" th:case="${true}">-->
+<!--            <a class="page-link" th:href="@{/?(p=${page.number})}">Previous</a>-->
+<!--        </li>-->
+<!--        <li class="page-item" th:case="${false}">-->
+<!--            <a class="page-link">Previous</a>-->
+<!--        </li>-->
+<!--    </th:block>-->
 
-    <!-- 頁數 -->
-    <th:block th:each=" pageNumber : ${#numbers.sequence(1, page.totalPages) }">
-        <th:block th:switch="${page.number+1 != pageNumber}">
-            <li class="page-item" th:case="${true}">
-                <a class="page-link" th:href="@{/?(p=${pageNumber})}">[[${pageNumber}]]</a>
-            </li>
-            <li class="page-item active" th:case="${false}">
-                <span class="page-link" th:text="${pageNumber}"></span>
-            </li>
-        </th:block>
-    </th:block>
+<!--    &lt;!&ndash; 頁數 &ndash;&gt;-->
+<!--    <th:block th:each=" pageNumber : ${#numbers.sequence(1, page.totalPages) }">-->
+<!--        <th:block th:switch="${page.number+1 != pageNumber}">-->
+<!--            <li class="page-item" th:case="${true}">-->
+<!--                <a class="page-link" th:href="@{/?(p=${pageNumber})}">[[${pageNumber}]]</a>-->
+<!--            </li>-->
+<!--            <li class="page-item active" th:case="${false}">-->
+<!--                <span class="page-link" th:text="${pageNumber}"></span>-->
+<!--            </li>-->
+<!--        </th:block>-->
+<!--    </th:block>-->
 
-    <th:block th:switch="${page.totalPages != page.number + 1}">
-        <li class="page-item" th:case="${true}">
-            <a class="page-link" th:href="@{/?(p=${page.number + 2})}">Next</a>
-        </li>
-        <li class="page-item" th:case="${false}">
-            <a class="page-link">Next</a>
-        </li>
-    </th:block>
+<!--    <th:block th:switch="${page.totalPages != page.number + 1}">-->
+<!--        <li class="page-item" th:case="${true}">-->
+<!--            <a class="page-link" th:href="@{/?(p=${page.number + 2})}">Next</a>-->
+<!--        </li>-->
+<!--        <li class="page-item" th:case="${false}">-->
+<!--            <a class="page-link">Next</a>-->
+<!--        </li>-->
+<!--    </th:block>-->
 
 </ul>
-</div>>
+</div>
 </body>
 </html>
